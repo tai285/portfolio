@@ -33,13 +33,27 @@ touch component code to update text:
 
 ### Adding real photos to the Album
 
+Photos live in one folder per category:
+
+```
+public/photos/prism-2026/
+public/photos/uec-2026/
+public/photos/fyp/
+public/photos/behind-the-scenes/
+```
+
 Each entry in `src/data/photos.ts` points at a path like
-`/photos/prism-gold.jpg`. Until that file exists, the Album shows a cute
-placeholder card naming the exact filename it's waiting for — so you can
-see the full layout before uploading anything. To add a real photo: drop
-the image into `public/photos/` with the matching filename (or edit the
-`src` path to whatever you used) and it swaps in automatically, no code
-changes needed. Add/rename/remove entries and categories in that same file.
+`photos/prism-2026/prism-gold.jpg` (relative — **no leading `/`**, since an
+absolute path would resolve against the domain root and break under the
+GitHub Pages `/portfolio/` subpath). Until that file exists, the Album
+shows a placeholder card naming the exact filename it's waiting for, so
+you can see the full layout before uploading anything.
+
+To add a real photo: drop the image into the matching category folder
+under `public/photos/` with the matching filename (or edit the `src` path
+in `photos.ts` to whatever you used) and it swaps in automatically — no
+code changes needed. Add a new category by adding a folder + a new entry
+in the `categories` array + photo entries referencing it.
 
 ## Deployment
 
