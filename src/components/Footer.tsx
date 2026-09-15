@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { profile } from "../data/profile";
+import { Flower, GrassRow } from "./decor/GardenFloor";
 
 const LONG_PRESS_MS = 1000;
 
@@ -73,6 +74,36 @@ export function Footer() {
       <p className="mt-6 text-xs text-[var(--fg-muted)]">
         Built with React, TypeScript &amp; a little too much Framer Motion.
       </p>
+
+      <div className="relative mt-10 h-16 overflow-hidden" aria-hidden="true">
+        <Flower
+          petalColor="#d9639b"
+          size={22}
+          className="absolute bottom-3 left-[8%]"
+        />
+        <Flower
+          petalColor="#b98dd4"
+          size={18}
+          className="absolute bottom-4 left-[22%]"
+        />
+        <Flower
+          petalColor="#9edde3"
+          size={24}
+          className="absolute bottom-2 left-[46%]"
+        />
+        <Flower
+          petalColor="#f2c869"
+          centerColor="#d9639b"
+          size={19}
+          className="absolute bottom-4 left-[68%]"
+        />
+        <Flower
+          petalColor="#e8a6c8"
+          size={21}
+          className="absolute bottom-3 left-[86%]"
+        />
+        <GrassRow className="absolute inset-x-0 bottom-0 h-16 w-full" />
+      </div>
     </footer>
   );
 }

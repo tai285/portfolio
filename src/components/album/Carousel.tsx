@@ -101,9 +101,7 @@ export function Carousel({ photos, onOpenLightbox }: CarouselProps) {
               animate={{ x, scale, rotateY, opacity, zIndex }}
               transition={SPRING}
               style={{ transformStyle: "preserve-3d" }}
-              className={`absolute inset-0 m-auto h-full w-[74%] rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-lg sm:w-[80%] ${
-                isCenter ? "carousel-center-glow" : ""
-              }`}
+              className="absolute inset-0 m-auto h-full w-[74%] rounded-3xl border border-[var(--border)] bg-[var(--surface)] shadow-lg sm:w-[80%]"
             >
               {isCenter ? (
                 <motion.div

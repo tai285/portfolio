@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { journey } from "../data/journey";
+import { AwardSparkle } from "./decor/AwardSparkle";
 import { SectionHeading } from "./SectionHeading";
 
 export function Journey() {
@@ -29,7 +30,11 @@ export function Journey() {
               {entry.year}
             </p>
             <h3 className="mt-1 text-xl">
-              {entry.badge && <span aria-hidden="true">{entry.badge} </span>}
+              {entry.badge && (
+                <AwardSparkle>
+                  <span aria-hidden="true">{entry.badge} </span>
+                </AwardSparkle>
+              )}
               {entry.title}
             </h3>
             <p className="mt-2 text-[var(--fg-muted)] leading-relaxed">

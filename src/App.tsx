@@ -2,6 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { About } from "./components/About";
 import { Album } from "./components/album/Album";
+import { Fireflies } from "./components/decor/Fireflies";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
 import { Journey } from "./components/Journey";
@@ -57,6 +58,7 @@ function App() {
 
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--fg)]">
+      <Fireflies />
       <Nav unlocked={unlocked} />
       <main>
         <Hero />
