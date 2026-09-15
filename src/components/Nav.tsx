@@ -8,7 +8,11 @@ const LINKS = [
   { href: "#playground", label: "Playground" },
 ];
 
-export function Nav() {
+interface NavProps {
+  unlocked?: boolean;
+}
+
+export function Nav({ unlocked }: NavProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -28,12 +32,24 @@ export function Nav() {
       }`}
     >
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
-        <a
-          href="#top"
-          className="font-heading text-lg font-semibold text-primary cursor-pointer"
-        >
-          Dorothy ✦
-        </a>
+        <div className="flex items-center gap-2">
+          <a
+            href="#top"
+            className="font-heading text-lg font-semibold text-primary cursor-pointer"
+          >
+            Dorothy ✦
+          </a>
+          {unlocked && (
+            <a
+              href="#/the-matrix"
+              title="You unlocked the secret page — revisit it anytime"
+              aria-label="Revisit the secret Matrix page"
+              className="cursor-pointer rounded-full border border-[var(--border)] px-2 py-0.5 text-xs transition-colors hover:border-primary-light"
+            >
+              🐇
+            </a>
+          )}
+        </div>
 
         <ul className="hidden gap-6 sm:flex">
           {LINKS.map((link) => (

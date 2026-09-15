@@ -107,3 +107,70 @@ h4 {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 0);
+}
+
+.glitch-text::before {
+  color: #ff5f7e;
+  transform: translate(-2px, 0);
+  animation: glitch-a 2.6s infinite linear;
+}
+
+.glitch-text::after {
+  color: #4be3ff;
+  transform: translate(2px, 0);
+  animation: glitch-b 2.6s infinite linear;
+}
+
+@keyframes glitch-a {
+  0%,
+  92%,
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(-2px, 0);
+  }
+  93% {
+    clip-path: inset(10% 0 60% 0);
+    transform: translate(-4px, -1px);
+  }
+  96% {
+    clip-path: inset(60% 0 5% 0);
+    transform: translate(3px, 1px);
+  }
+}
+
+@keyframes glitch-b {
+  0%,
+  90%,
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(2px, 0);
+  }
+  91% {
+    clip-path: inset(40% 0 20% 0);
+    transform: translate(4px, 1px);
+  }
+  95% {
+    clip-path: inset(5% 0 70% 0);
+    transform: translate(-3px, -1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text::before,
+  .glitch-text::after {
+    animation: none;
+    content: none;
+  }
+}
