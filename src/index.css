@@ -198,7 +198,10 @@ h4 {
   }
 }
 
-.firefly-dot {
+/* No animation/keyframe here -- Framer Motion owns transform+opacity
+   for these (see FireflyDot.tsx), since it needs to react live to
+   taps and scroll rather than loop a fixed CSS keyframe. */
+.firefly-glow {
   position: absolute;
   width: 7px;
   height: 7px;
@@ -207,29 +210,7 @@ h4 {
   box-shadow:
     0 0 10px 3px rgba(255, 205, 100, 0.95),
     0 0 20px 8px rgba(255, 205, 100, 0.5);
-  animation: firefly-drift ease-in-out infinite;
   will-change: transform, opacity;
-}
-
-@keyframes firefly-drift {
-  0% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.85;
-  }
-  50% {
-    transform: translate(var(--fx, 20px), var(--fy, -24px));
-    opacity: 1;
-  }
-  88% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
 }
 
 .glow-blob {
