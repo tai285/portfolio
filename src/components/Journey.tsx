@@ -1,16 +1,21 @@
 import { motion } from "framer-motion";
 import { journey } from "../data/journey";
 import { AwardSparkle } from "./decor/AwardSparkle";
+import { CloudReveal } from "./decor/CloudReveal";
 import { SectionHeading } from "./SectionHeading";
 
 export function Journey() {
   return (
     <section id="journey" className="bg-[var(--bg-alt)] px-5 py-20">
-      <SectionHeading
-        eyebrow="From FYP to research"
-        title="My Journey"
-        subtitle="Build it. Understand it. Extend it."
-      />
+      <CloudReveal>
+        <div className="py-2">
+          <SectionHeading
+            eyebrow="From FYP to research"
+            title="My Journey"
+            subtitle="Build it. Understand it. Extend it."
+          />
+        </div>
+      </CloudReveal>
 
       <ol className="relative mx-auto mt-12 max-w-2xl border-s-2 border-[var(--border)] ps-6 sm:ps-8">
         {journey.map((entry, i) => (
@@ -30,12 +35,13 @@ export function Journey() {
               {entry.year}
             </p>
             <h3 className="mt-1 text-xl">
-              {entry.badge && (
-                <AwardSparkle>
-                  <span aria-hidden="true">{entry.badge} </span>
+              {entry.badge ? (
+                <AwardSparkle badge={entry.badge} gold={entry.badge === "🥇"}>
+                  {entry.title}
                 </AwardSparkle>
+              ) : (
+                entry.title
               )}
-              {entry.title}
             </h3>
             <p className="mt-2 text-[var(--fg-muted)] leading-relaxed">
               {entry.description}

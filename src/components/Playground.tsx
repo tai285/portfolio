@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LocalFireflies } from "./decor/LocalFireflies";
 import { SectionHeading } from "./SectionHeading";
 import { TriviaGame } from "./games/TriviaGame";
 import { MemoryMatchGame } from "./games/MemoryMatchGame";
@@ -46,10 +47,13 @@ export function Playground() {
         ))}
       </div>
 
-      <div className="mx-auto mt-8 max-w-2xl">
-        {tab === "facts" && <FunFactCard />}
-        {tab === "trivia" && <TriviaGame />}
-        {tab === "memory" && <MemoryMatchGame />}
+      <div className="relative mx-auto mt-8 max-w-2xl">
+        <LocalFireflies count={3} seed={17} className="-inset-x-8 -inset-y-8" />
+        <div className="relative z-10">
+          {tab === "facts" && <FunFactCard />}
+          {tab === "trivia" && <TriviaGame />}
+          {tab === "memory" && <MemoryMatchGame />}
+        </div>
       </div>
     </section>
   );

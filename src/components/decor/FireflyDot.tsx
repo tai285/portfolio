@@ -1,5 +1,5 @@
 import { motion, useAnimationControls } from "framer-motion";
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from "react";
 
 export interface FireflyHandle {
   scatterFrom: (clientX: number, clientY: number) => void;
@@ -10,16 +10,22 @@ interface FireflyDotProps {
   left: number;
   top: number;
   delay: number;
+  size: number;
+  layer: "back" | "front";
 }
 
 const SCATTER_RADIUS = 170;
 const REST_MS = 900;
 
 export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
-  function FireflyDot({ left, top, delay }, ref) {
+  function FireflyDot({ left, top, delay, size, layer }, ref) {
     const controls = useAnimationControls();
     const elRef = useRef<HTMLSpanElement>(null);
     const restUntil = useRef(0);
+    // Bigger ones read as "closer" -- they wander a bit further and
+    // faster than the small, hazier "back" ones.
+    const range = layer === "front" ? 1.15 : 0.75;
+    const speed = layer === "front" ? 0.85 : 1.2;
 
     useEffect(() => {
       let cancelled = false;
@@ -32,14 +38,20 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
             await new Promise((r) => setTimeout(r, restUntil.current - now));
             continue;
           }
-          const dx = (Math.random() - 0.5) * 60;
-          const dy = (Math.random() - 0.5) * 46;
-          const opacity = 0.35 + Math.random() * 0.55;
+          const dx = (Math.random() - 0.5) * 60 * range;
+          const dy = (Math.random() - 0.5) * 46 * range;
+          const opacity =
+            layer === "front"
+              ? 0.45 + Math.random() * 0.5
+              : 0.2 + Math.random() * 0.35;
           await controls.start({
             x: dx,
             y: dy,
             opacity,
-            transition: { duration: 3.5 + Math.random() * 3, ease: "easeInOut" },
+            transition: {
+              duration: (3.5 + Math.random() * 3) * speed,
+              ease: "easeInOut",
+            },
           });
         }
       }
@@ -48,7 +60,7 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
       return () => {
         cancelled = true;
       };
-    }, [controls, delay]);
+    }, [controls, delay, range, speed, layer]);
 
     useImperativeHandle(ref, () => ({
       scatterFrom(clientX, clientY) {
@@ -85,9 +97,18 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
       <motion.span
         ref={elRef}
         animate={controls}
-        initial={{ x: 0, y: 0, opacity: 0.55 }}
+        initial={{ x: 0, y: 0, opacity: 0.4 }}
         className="firefly-glow"
-        style={{ left: `${left}%`, top: `${top}%` }}
+        style={
+          {
+            left: `${left}%`,
+            top: `${top}%`,
+            width: size,
+            height: size,
+            "--fg-size": `${size}px`,
+            filter: layer === "back" ? `blur(${size * 0.18}px)` : undefined,
+          } as CSSProperties
+        }
       />
     );
   },
