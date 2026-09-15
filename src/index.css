@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Fredoka", ui-rounded, system-ui, sans-serif;
+  --font-body: "Quicksand", system-ui, sans-serif;
+
+  --color-primary: #8f6ba8;
+  --color-primary-light: #b98dd4;
+  --color-secondary: #e5a6c8;
+  --color-accent: #9edde3;
+  --color-accent-2: #8aa7e8;
+
+  --color-success: #7bc99b;
+  --color-error: #f0a3a3;
+
+  --color-bg: #fdf9ff;
+  --color-bg-alt: #f6ecfb;
+  --color-surface: #ffffff;
+  --color-fg: #3d2e4a;
+  --color-fg-muted: #7a6a8a;
+  --color-border: #e8d9f5;
+
+  --color-bg-dark: #16121f;
+  --color-bg-alt-dark: #1e1830;
+  --color-surface-dark: #221b32;
+  --color-fg-dark: #f3eaf8;
+  --color-fg-muted-dark: #c3b3d6;
+  --color-border-dark: #3a2e4d;
+}
+
+:root {
+  color-scheme: light dark;
+  --bg: var(--color-bg);
+  --bg-alt: var(--color-bg-alt);
+  --surface: var(--color-surface);
+  --fg: var(--color-fg);
+  --fg-muted: var(--color-fg-muted);
+  --border: var(--color-border);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: var(--color-bg-dark);
+    --bg-alt: var(--color-bg-alt-dark);
+    --surface: var(--color-surface-dark);
+    --fg: var(--color-fg-dark);
+    --fg-muted: var(--color-fg-muted-dark);
+    --border: var(--color-border-dark);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: var(--color-bg-dark);
+  --bg-alt: var(--color-bg-alt-dark);
+  --surface: var(--color-surface-dark);
+  --fg: var(--color-fg-dark);
+  --fg-muted: var(--color-fg-muted-dark);
+  --border: var(--color-border-dark);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+::selection {
+  background: var(--color-secondary);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent-2);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
