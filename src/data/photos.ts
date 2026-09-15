@@ -16,28 +16,9 @@ export const categories = [
   "Behind the Scenes",
 ] as const;
 
+// Order matters: this is also the order shown in the "All" carousel/grid,
+// so real photos are listed before any category that's still placeholders.
 export const photos: Photo[] = [
-  {
-    id: "prism-gold",
-    src: "/photos/prism-gold.jpg",
-    alt: "Dorothy receiving the PRISM 2026 Gold Award",
-    category: "PRISM 2026",
-    caption: "Gold Award — PRISM 2026",
-  },
-  {
-    id: "prism-consolation",
-    src: "/photos/prism-consolation.jpg",
-    alt: "Dorothy receiving the PRISM 2026 Consolation Prize",
-    category: "PRISM 2026",
-    caption: "Consolation Prize — PRISM 2026",
-  },
-  {
-    id: "prism-team",
-    src: "/photos/prism-team.jpg",
-    alt: "Project team at PRISM 2026",
-    category: "PRISM 2026",
-    caption: "With the project team",
-  },
   {
     id: "uec-award-presentation",
     src: "/photos/uec-award-presentation.jpg",
@@ -72,6 +53,27 @@ export const photos: Photo[] = [
     alt: "Dorothy celebrating with a fellow presenter, both giving a thumbs up",
     category: "UEC 2026",
     caption: "Celebrating after the presentation",
+  },
+  {
+    id: "prism-gold",
+    src: "/photos/prism-gold.jpg",
+    alt: "Dorothy receiving the PRISM 2026 Gold Award",
+    category: "PRISM 2026",
+    caption: "Gold Award — PRISM 2026",
+  },
+  {
+    id: "prism-consolation",
+    src: "/photos/prism-consolation.jpg",
+    alt: "Dorothy receiving the PRISM 2026 Consolation Prize",
+    category: "PRISM 2026",
+    caption: "Consolation Prize — PRISM 2026",
+  },
+  {
+    id: "prism-team",
+    src: "/photos/prism-team.jpg",
+    alt: "Project team at PRISM 2026",
+    category: "PRISM 2026",
+    caption: "With the project team",
   },
   {
     id: "fyp-hardware",
