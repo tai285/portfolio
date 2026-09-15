@@ -1,9 +1,11 @@
 # Dorothy's Portfolio
 
-Personal portfolio site — hero, about, journey timeline, projects, and a
-"Playground" section with three minigames (fun facts, trivia quiz, memory
-match). Built with React, TypeScript, Vite, Tailwind CSS v4, and Framer
-Motion.
+Personal portfolio site — hero, about, journey timeline, projects, an
+album/gallery with a category-filterable carousel, and a "Playground"
+section with three minigames (fun facts, trivia quiz, memory match). Plus a
+hidden CTF-style easter egg (console hint → Konami code / swipe pattern →
+terminal riddle → glitched secret page). Built with React, TypeScript, Vite,
+Tailwind CSS v4, and Framer Motion.
 
 ## Getting started
 
@@ -25,8 +27,19 @@ touch component code to update text:
 | `src/data/journey.ts` | Timeline entries on the "My Journey" section |
 | `src/data/projects.ts` | Project cards |
 | `src/data/trivia.ts` | Trivia quiz questions |
-| `src/data/funFacts.ts` | **Fill these in!** Placeholder personal fun facts for the "Fun Facts" game |
+| `src/data/funFacts.ts` | **Fill these in!** Placeholder personal fun facts for the "Fun Facts" game (also shown on the secret Matrix page) |
 | `src/data/memoryCards.ts` | The 8 pairs used in the memory-match game |
+| `src/data/photos.ts` | Album photos: category, caption, and file path |
+
+### Adding real photos to the Album
+
+Each entry in `src/data/photos.ts` points at a path like
+`/photos/prism-gold.jpg`. Until that file exists, the Album shows a cute
+placeholder card naming the exact filename it's waiting for — so you can
+see the full layout before uploading anything. To add a real photo: drop
+the image into `public/photos/` with the matching filename (or edit the
+`src` path to whatever you used) and it swaps in automatically, no code
+changes needed. Add/rename/remove entries and categories in that same file.
 
 ## Deployment
 

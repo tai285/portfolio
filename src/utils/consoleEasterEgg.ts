@@ -15,11 +15,15 @@ export function printConsoleEasterEgg() {
     "color:#8F6BA8;font-family:monospace;",
   );
   console.log(
-    "%cTry the classic cheat code on your keyboard, anywhere on the page:",
+    "%cOn a keyboard? Try the classic cheat code, anywhere on the page:",
     "color:#8F6BA8;font-family:monospace;",
   );
   console.log(
     "%c↑ ↑ ↓ ↓ ← → ← → B A",
     "color:#9EDDE3;font-family:monospace;font-size:16px;font-weight:bold;",
+  );
+  console.log(
+    "%cOn a touchscreen? Swipe the same pattern, then tap left, tap right.",
+    "color:#8F6BA8;font-family:monospace;",
   );
 }

@@ -1,6 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { About } from "./components/About";
+import { Album } from "./components/album/Album";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
 import { Journey } from "./components/Journey";
@@ -11,7 +12,7 @@ import { AccessDenied } from "./components/secret/AccessDenied";
 import { MatrixPage } from "./components/secret/MatrixPage";
 import { Terminal } from "./components/secret/Terminal";
 import { useHash } from "./hooks/useHash";
-import { useKonamiCode } from "./hooks/useKonamiCode";
+import { useSecretSequence } from "./hooks/useSecretSequence";
 import { printConsoleEasterEgg } from "./utils/consoleEasterEgg";
 import { isMatrixUnlocked, setMatrixUnlocked } from "./utils/secretStorage";
 
@@ -31,7 +32,7 @@ function App() {
     setTerminalOpen(true);
   }, [unlocked]);
 
-  useKonamiCode(openTerminal);
+  useSecretSequence(openTerminal);
 
   const inMatrix = hash === MATRIX_HASH;
   const showAccessDenied = inMatrix && !unlocked;
@@ -62,6 +63,7 @@ function App() {
         <About />
         <Journey />
         <Projects />
+        <Album />
         <Playground />
       </main>
       <Footer />

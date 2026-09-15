@@ -119,9 +119,9 @@ export function Terminal({ onClose, onSolved }: TerminalProps) {
         exit={{ opacity: 0, scale: 0.95, y: 12 }}
         transition={{ duration: 0.25 }}
         onClick={(e) => e.stopPropagation()}
-        className="flex h-[70vh] w-full max-w-xl flex-col rounded-2xl border border-[#2fbf6e]/40 bg-black font-mono text-sm text-[#3fe07a] shadow-[0_0_40px_rgba(63,224,122,0.25)]"
+        className="flex h-[75vh] w-full max-w-xl flex-col rounded-2xl border border-[#2fbf6e]/40 bg-black font-mono text-sm text-[#3fe07a] shadow-[0_0_40px_rgba(63,224,122,0.25)] sm:h-[70vh]"
       >
-        <div className="flex items-center justify-between rounded-t-2xl border-b border-[#2fbf6e]/30 px-4 py-2.5">
+        <div className="flex items-center justify-between rounded-t-2xl border-b border-[#2fbf6e]/30 px-3 py-1.5 sm:px-4 sm:py-2.5">
           <span className="text-xs tracking-wide text-[#3fe07a]/70">
             secret-terminal — bash
           </span>
@@ -129,9 +129,9 @@ export function Terminal({ onClose, onSolved }: TerminalProps) {
             type="button"
             onClick={onClose}
             aria-label="Close terminal"
-            className="cursor-pointer rounded px-2 py-1 text-xs text-[#3fe07a]/70 hover:text-[#3fe07a]"
+            className="flex h-11 min-w-11 cursor-pointer items-center justify-center rounded px-2 text-xs text-[#3fe07a]/70 hover:text-[#3fe07a]"
           >
-            ✕ close (Esc)
+            ✕ close
           </button>
         </div>
 
@@ -160,7 +160,7 @@ export function Terminal({ onClose, onSolved }: TerminalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="w-full cursor-pointer rounded-lg border border-[#3fe07a]/50 bg-[#3fe07a]/10 py-2.5 text-center font-semibold text-[#a6f7c9] transition-colors hover:bg-[#3fe07a]/20"
+              className="min-h-11 w-full cursor-pointer rounded-lg border border-[#3fe07a]/50 bg-[#3fe07a]/10 py-3 text-center font-semibold text-[#a6f7c9] transition-colors hover:bg-[#3fe07a]/20"
             >
               Enter the Matrix →
             </button>
@@ -171,7 +171,7 @@ export function Terminal({ onClose, onSolved }: TerminalProps) {
                 runCommand(input);
                 setInput("");
               }}
-              className="flex items-center gap-2"
+              className="flex min-h-11 items-center gap-2"
             >
               <span aria-hidden="true">$</span>
               <input
@@ -180,8 +180,10 @@ export function Terminal({ onClose, onSolved }: TerminalProps) {
                 onChange={(e) => setInput(e.target.value)}
                 spellCheck={false}
                 autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
                 aria-label="Terminal command input"
-                className="flex-1 bg-transparent text-[#3fe07a] outline-none placeholder:text-[#3fe07a]/40"
+                className="min-h-11 flex-1 bg-transparent text-base text-[#3fe07a] outline-none placeholder:text-[#3fe07a]/40 sm:text-sm"
                 placeholder="type a command..."
               />
             </form>
