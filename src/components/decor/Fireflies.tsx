@@ -19,7 +19,7 @@ function useFireflyField(count: number, seed: number, layer: "back" | "front") {
       left: rand() * 100,
       top: rand() * 100,
       delay: rand() * 8,
-      size: layer === "front" ? 6 + rand() * 8 : 3 + rand() * 4,
+      size: layer === "front" ? 2 + rand() * 2.5 : 1 + rand() * 1.5,
       layer,
     }));
   }, [count, seed, layer]);

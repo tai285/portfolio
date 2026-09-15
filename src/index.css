@@ -215,6 +215,29 @@ h4 {
   will-change: transform, opacity;
 }
 
+/* Breathing glow -- box-shadow only, so the animated value simply
+   overrides .firefly-glow's static box-shadow while it plays, without
+   ever touching transform/opacity (Framer owns those on this same
+   element for movement/scatter/stir). */
+.firefly-breathe {
+  animation: firefly-breathe ease-in-out infinite;
+  animation-duration: 2.6s;
+}
+
+@keyframes firefly-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 calc(var(--fg-glow) * 0.55) calc(var(--fg-size, 7px) * 0.2) rgba(255, 205, 100, 0.55),
+      0 0 calc(var(--fg-glow2) * 0.55) calc(var(--fg-size, 7px) * 0.6) rgba(255, 205, 100, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 var(--fg-glow) calc(var(--fg-size, 7px) * 0.55) rgba(255, 205, 100, 1),
+      0 0 var(--fg-glow2) calc(var(--fg-size, 7px) * 1.4) rgba(255, 205, 100, 0.6);
+  }
+}
+
 /* Gold medal glow + light sweep. box-shadow/background-position only,
    never transform, so it never conflicts with anything else animating
    this element's transform. */

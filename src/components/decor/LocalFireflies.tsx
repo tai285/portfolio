@@ -21,7 +21,7 @@ export function LocalFireflies({ count = 3, seed = 9, className }: LocalFireflie
       left: rand() * 100,
       top: rand() * 100,
       delay: rand() * 6,
-      size: 5 + rand() * 6,
+      size: 1.5 + rand() * 2,
     }));
   }, [count, seed]);
 
@@ -37,7 +37,7 @@ export function LocalFireflies({ count = 3, seed = 9, className }: LocalFireflie
           top={f.top}
           delay={f.delay}
           size={f.size}
-          layer="front"
+          layer="back"
         />
       ))}
     </div>

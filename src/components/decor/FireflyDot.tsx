@@ -17,14 +17,23 @@ interface FireflyDotProps {
 const SCATTER_RADIUS = 170;
 const REST_MS = 900;
 
+function clamp(v: number, max: number) {
+  return Math.max(-max, Math.min(max, v));
+}
+
 export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
   function FireflyDot({ left, top, delay, size, layer }, ref) {
     const controls = useAnimationControls();
     const elRef = useRef<HTMLSpanElement>(null);
     const restUntil = useRef(0);
-    // Bigger ones read as "closer" -- they wander a bit further and
+    // Current accumulated offset from spawn point -- the walk drifts
+    // from HERE each step, not back to a fixed small box, so it reads
+    // as actually roaming rather than jittering in place.
+    const pos = useRef({ x: 0, y: 0 });
+    // Bigger ones read as "closer" -- they roam a bit further and
     // faster than the small, hazier "back" ones.
-    const range = layer === "front" ? 1.15 : 0.75;
+    const maxRange = layer === "front" ? 240 : 150;
+    const stepSize = layer === "front" ? 90 : 60;
     const speed = layer === "front" ? 0.85 : 1.2;
 
     useEffect(() => {
@@ -38,18 +47,20 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
             await new Promise((r) => setTimeout(r, restUntil.current - now));
             continue;
           }
-          const dx = (Math.random() - 0.5) * 60 * range;
-          const dy = (Math.random() - 0.5) * 46 * range;
+          pos.current = {
+            x: clamp(pos.current.x + (Math.random() - 0.5) * stepSize, maxRange),
+            y: clamp(pos.current.y + (Math.random() - 0.5) * stepSize * 0.75, maxRange * 0.7),
+          };
           const opacity =
             layer === "front"
               ? 0.45 + Math.random() * 0.5
               : 0.2 + Math.random() * 0.35;
           await controls.start({
-            x: dx,
-            y: dy,
+            x: pos.current.x,
+            y: pos.current.y,
             opacity,
             transition: {
-              duration: (3.5 + Math.random() * 3) * speed,
+              duration: (3 + Math.random() * 2.5) * speed,
               ease: "easeInOut",
             },
           });
@@ -60,7 +71,7 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
       return () => {
         cancelled = true;
       };
-    }, [controls, delay, range, speed, layer]);
+    }, [controls, delay, maxRange, stepSize, speed, layer]);
 
     useImperativeHandle(ref, () => ({
       scatterFrom(clientX, clientY) {
@@ -74,8 +85,9 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
         if (dist > SCATTER_RADIUS) return;
 
         const power = 1 - dist / SCATTER_RADIUS;
-        const nx = (dx / dist) * 70 * power;
-        const ny = (dy / dist) * 70 * power;
+        const nx = clamp(pos.current.x + (dx / dist) * 70 * power, maxRange);
+        const ny = clamp(pos.current.y + (dy / dist) * 70 * power, maxRange);
+        pos.current = { x: nx, y: ny };
         restUntil.current = Date.now() + REST_MS;
         controls.start({
           x: nx,
@@ -85,9 +97,11 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
         });
       },
       stir(dy) {
+        const ny = clamp(pos.current.y + dy, maxRange);
+        pos.current.y = ny;
         restUntil.current = Date.now() + 350;
         controls.start({
-          y: dy,
+          y: ny,
           transition: { type: "spring", stiffness: 130, damping: 11 },
         });
       },
@@ -98,7 +112,7 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
         ref={elRef}
         animate={controls}
         initial={{ x: 0, y: 0, opacity: 0.4 }}
-        className="firefly-glow"
+        className="firefly-glow firefly-breathe"
         style={
           {
             left: `${left}%`,
@@ -107,6 +121,8 @@ export const FireflyDot = forwardRef<FireflyHandle, FireflyDotProps>(
             height: size,
             "--fg-size": `${size}px`,
             filter: layer === "back" ? `blur(${size * 0.18}px)` : undefined,
+            animationDelay: `${delay % 3}s`,
+            animationDuration: `${2.2 + (delay % 5) * 0.3}s`,
           } as CSSProperties
         }
       />
