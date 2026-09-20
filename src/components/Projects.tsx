@@ -1,8 +1,14 @@
 import { motion } from "framer-motion";
-import { projects } from "../data/projects";
+import { projects as staticProjects } from "../data/projects";
+import { useContent } from "../hooks/useContent";
+import type { ProjectsContent } from "../types/content";
 import { SectionHeading } from "./SectionHeading";
 
 export function Projects() {
+  const { entries: projects } = useContent<ProjectsContent>("projects", {
+    entries: staticProjects,
+  });
+
   return (
     <section id="projects" className="px-5 py-20">
       <SectionHeading eyebrow="What I've built" title="Projects" />
@@ -10,7 +16,7 @@ export function Projects() {
       <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
         {projects.map((project, i) => (
           <motion.article
-            key={project.title}
+            key={i}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}

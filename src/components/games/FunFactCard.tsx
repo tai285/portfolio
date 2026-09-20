@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
-import { funFacts } from "../../data/funFacts";
+import { useEffect, useState } from "react";
+import { funFacts as staticFunFacts } from "../../data/funFacts";
+import { useContent } from "../../hooks/useContent";
+import type { FunFactsContent } from "../../types/content";
 
 function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
@@ -12,11 +14,24 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export function FunFactCard() {
+  const { facts: funFacts } = useContent<FunFactsContent>("funFacts", {
+    facts: staticFunFacts,
+  });
   const [order, setOrder] = useState<number[]>(() =>
     shuffle(funFacts.map((_, i) => i)),
   );
   const [pos, setPos] = useState(0);
   const [revealed, setRevealed] = useState(false);
+
+  // Re-shuffle whenever the underlying facts actually change (a CMS
+  // edit landing live), not just on mount -- keeps `order`'s indices
+  // valid for the current facts array.
+  useEffect(() => {
+    setOrder(shuffle(funFacts.map((_, i) => i)));
+    setPos(0);
+    setRevealed(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [funFacts]);
 
   const seenCount = revealed ? pos + 1 : pos;
 

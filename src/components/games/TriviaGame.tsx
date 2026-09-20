@@ -1,16 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { triviaQuestions } from "../../data/trivia";
+import { triviaQuestions as staticTriviaQuestions } from "../../data/trivia";
+import { useContent } from "../../hooks/useContent";
+import type { TriviaContent } from "../../types/content";
 
 type AnswerState = "unanswered" | "correct" | "wrong";
 
 export function TriviaGame() {
+  const { questions: triviaQuestions } = useContent<TriviaContent>("trivia", {
+    questions: staticTriviaQuestions,
+  });
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
-  const question = triviaQuestions[index];
+  const question = triviaQuestions[Math.min(index, triviaQuestions.length - 1)];
   const state: AnswerState =
     selected === null ? "unanswered" : selected === question.correctIndex ? "correct" : "wrong";
 
@@ -105,7 +110,7 @@ export function TriviaGame() {
               }
               return (
                 <button
-                  key={option}
+                  key={i}
                   type="button"
                   disabled={selected !== null}
                   onClick={() => selectAnswer(i)}

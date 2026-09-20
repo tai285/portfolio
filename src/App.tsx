@@ -1,9 +1,10 @@
 import { AnimatePresence } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { About } from "./components/About";
 import { Album } from "./components/album/Album";
 import { Fireflies } from "./components/decor/Fireflies";
 import { Footer } from "./components/Footer";
+import { Guestbook } from "./components/Guestbook";
 import { Hero } from "./components/Hero";
 import { Journey } from "./components/Journey";
 import { Nav } from "./components/Nav";
@@ -17,7 +18,13 @@ import { useSecretSequence } from "./hooks/useSecretSequence";
 import { printConsoleEasterEgg } from "./utils/consoleEasterEgg";
 import { isMatrixUnlocked, setMatrixUnlocked } from "./utils/secretStorage";
 
+// Lazy: the whole CMS (7 editors + guestbook moderation + Firebase
+// auth) only needs to be downloaded by someone who actually opens
+// #/admin, not by every visitor to the public site.
+const Admin = lazy(() => import("./pages/Admin").then((m) => ({ default: m.Admin })));
+
 const MATRIX_HASH = "#/the-matrix";
+const ADMIN_HASH = "#/admin";
 
 function App() {
   const [hash, setHash] = useHash();
@@ -56,6 +63,16 @@ function App() {
     return <MatrixPage onExit={handleExitMatrix} />;
   }
 
+  if (hash === ADMIN_HASH) {
+    return (
+      <Suspense
+        fallback={<p className="mt-24 text-center text-sm text-[var(--fg-muted)]">Loading…</p>}
+      >
+        <Admin />
+      </Suspense>
+    );
+  }
+
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--fg)]">
       <Fireflies />
@@ -67,6 +84,7 @@ function App() {
         <Projects />
         <Album />
         <Playground />
+        <Guestbook />
       </main>
       <Footer />
 

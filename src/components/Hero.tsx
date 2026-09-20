@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
-import { profile } from "../data/profile";
+import { profile as staticProfile } from "../data/profile";
+import { useContent } from "../hooks/useContent";
+import type { Profile } from "../types/content";
 import { Flower, GrassRow } from "./decor/GardenFloor";
 
 export function Hero() {
+  const profile = useContent<Profile>("profile", staticProfile);
+
   return (
     <section
       id="top"

@@ -1,9 +1,13 @@
 import { motion } from "framer-motion";
-import { profile } from "../data/profile";
+import { profile as staticProfile } from "../data/profile";
+import { useContent } from "../hooks/useContent";
+import type { Profile } from "../types/content";
 import { LocalFireflies } from "./decor/LocalFireflies";
 import { SectionHeading } from "./SectionHeading";
 
 export function About() {
+  const profile = useContent<Profile>("profile", staticProfile);
+
   return (
     <section id="about" className="px-5 py-20">
       <SectionHeading eyebrow="Get to know me" title="About" />
@@ -18,8 +22,8 @@ export function About() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="relative z-10 space-y-4 rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-8 text-left shadow-sm"
         >
-          {profile.bio.map((paragraph) => (
-            <p key={paragraph} className="text-[var(--fg-muted)] leading-relaxed">
+          {profile.bio.map((paragraph, i) => (
+            <p key={i} className="text-[var(--fg-muted)] leading-relaxed">
               {paragraph}
             </p>
           ))}

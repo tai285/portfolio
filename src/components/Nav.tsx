@@ -7,6 +7,7 @@ const LINKS = [
   { href: "#projects", label: "Projects" },
   { href: "#album", label: "Album" },
   { href: "#playground", label: "Playground" },
+  { href: "#guestbook", label: "Guestbook" },
 ];
 
 interface NavProps {

@@ -1,11 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { profile } from "../data/profile";
+import { profile as staticProfile } from "../data/profile";
+import { useContent } from "../hooks/useContent";
+import type { Profile } from "../types/content";
 import { Flower, GrassRow } from "./decor/GardenFloor";
 
 const LONG_PRESS_MS = 1000;
 
 export function Footer() {
+  const profile = useContent<Profile>("profile", staticProfile);
   const [showHint, setShowHint] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

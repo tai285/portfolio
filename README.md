@@ -1,11 +1,12 @@
 # Dorothy's Portfolio
 
 Personal portfolio site — hero, about, journey timeline, projects, an
-album/gallery with a category-filterable carousel, and a "Playground"
-section with three minigames (fun facts, trivia quiz, memory match). Plus a
-hidden CTF-style easter egg (console hint → Konami code / swipe pattern →
-terminal riddle → glitched secret page). Built with React, TypeScript, Vite,
-Tailwind CSS v4, and Framer Motion.
+album/gallery with a category-filterable carousel, a guestbook, and a
+"Playground" section with three minigames (fun facts, trivia quiz, memory
+match). Plus a hidden CTF-style easter egg (console hint → Konami code /
+swipe pattern → terminal riddle → glitched secret page). Built with React,
+TypeScript, Vite, Tailwind CSS v4, Framer Motion, and an optional Firebase
+backend for a no-code admin panel and the guestbook.
 
 ## Getting started
 
@@ -16,10 +17,52 @@ npm run build    # production build to dist/
 npm run preview  # preview the production build locally
 ```
 
-## Editing content
+## Content admin panel (CMS)
 
-Everything content-related lives in `src/data/`, so you shouldn't need to
-touch component code to update text:
+Once Firebase is connected (see below), open `/#/admin` on your deployed
+site and sign in to edit **everything** — profile, journey timeline,
+projects, album photos (including uploading new ones directly, no git
+needed), fun facts, trivia, memory-match cards, and guestbook moderation.
+Changes save to Firestore and appear live on the public site immediately,
+in every open tab — no rebuild, no deploy, no waiting.
+
+Until Firebase is connected, the site runs entirely on the static files in
+`src/data/` (see below) and `/#/admin` shows a "not set up yet" message —
+nothing is broken, it just isn't dynamic yet.
+
+### One-time Firebase setup (~5 minutes)
+
+1. Go to [console.firebase.google.com](https://console.firebase.google.com) → **Add project** (any name, Google Analytics optional)
+2. **Build → Firestore Database** → Create database → **production mode**
+3. **Build → Authentication** → Get started → enable **Email/Password** → **Users** tab → **Add user** with your own email + a password (this is your `/#/admin` login — there's no public sign-up)
+4. **Build → Storage** → Get started → production mode
+5. In **Firestore Database → Rules**, paste the contents of [`firestore.rules`](firestore.rules) and publish
+6. In **Storage → Rules**, paste the contents of [`storage.rules`](storage.rules) and publish
+7. **⚙️ Project settings** → scroll to "Your apps" → click **`</>`** → register a web app → copy the `firebaseConfig` values
+
+Then wire those values in two places:
+
+- **Local dev:** copy [`.env.local.example`](.env.local.example) to `.env.local` and fill it in (gitignored, never committed)
+- **Deployed site:** add each value as a **repository secret** (Settings → Secrets and variables → Actions → New repository secret) with the exact names from `.env.local.example` (`VITE_FIREBASE_API_KEY`, etc.) — the deploy workflow already reads them
+
+These config values are safe to be public (Firebase enforces access via
+the security rules files, not by hiding this config) — but keeping them
+out of git and in secrets/env files is still good practice.
+
+### Migrating your existing content into Firestore
+
+The admin panel starts each editor pre-filled from the current static data
+in `src/data/`, so the very first time you open a tab and hit **Save
+changes**, that content is copied into Firestore and the live site starts
+reading from there instead. Do this once per tab (Profile, Journey,
+Projects, Album photos, Fun facts, Trivia, Memory cards) whenever you're
+ready to make that section dynamic — there's no need to do it all at once.
+
+## Editing content directly (no Firebase needed)
+
+This is what the site falls back to when Firebase isn't connected, and
+it's also the *seed* content the admin panel starts from the first time
+each editor is opened:
 
 | File | What it controls |
 |---|---|
@@ -27,9 +70,13 @@ touch component code to update text:
 | `src/data/journey.ts` | Timeline entries on the "My Journey" section |
 | `src/data/projects.ts` | Project cards |
 | `src/data/trivia.ts` | Trivia quiz questions |
-| `src/data/funFacts.ts` | **Fill these in!** Placeholder personal fun facts for the "Fun Facts" game (also shown on the secret Matrix page) |
+| `src/data/funFacts.ts` | Personal fun facts for the "Fun Facts" game (also shown on the secret Matrix page) |
 | `src/data/memoryCards.ts` | The 8 pairs used in the memory-match game |
 | `src/data/photos.ts` | Album photos: category, caption, and file path |
+
+Editing these files requires a commit + a ~1-2 minute deploy to go live —
+if Firebase is connected, editing the same content through `/#/admin`
+instead goes live immediately with no deploy at all.
 
 ### Adding real photos to the Album
 
@@ -54,6 +101,18 @@ under `public/photos/` with the matching filename (or edit the `src` path
 in `photos.ts` to whatever you used) and it swaps in automatically — no
 code changes needed. Add a new category by adding a folder + a new entry
 in the `categories` array + photo entries referencing it.
+
+Once Firebase is connected, the Album photo editor in `/#/admin` can
+upload new images directly to Firebase Storage instead — no git needed
+for future photos.
+
+## Guestbook
+
+A public "leave a message" form near the bottom of the site (needs
+Firebase — see above). Every submission lands as **pending** and is
+invisible to other visitors until approved in `/#/admin` → Guestbook,
+so nothing offensive can appear on the page unreviewed. A hidden honeypot
+field silently drops obvious bot submissions.
 
 ## Deployment
 

@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Site content (profile, journey, projects, photos, fun facts,
+    // trivia, memory cards): public read, only the signed-in admin
+    // can write. There's only one account (created manually in the
+    // Firebase console), so "signed in" already means "the admin".
+    match /content/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Guestbook: anyone can leave a message, but it must land
+    // unapproved and can't self-approve or self-edit. Only approved
+    // messages are publicly visible; the admin can read/update/delete
+    // everything (for moderation).
+    match /guestbook/{messageId} {
+      allow read: if resource.data.approved == true || request.auth != null;
+
+      allow create: if
+        request.resource.data.approved == false &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() <= 40 &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() > 0 &&
+        request.resource.data.message.size() <= 300;
+
+      allow update, delete: if request.auth != null;
+    }
+  }
+}

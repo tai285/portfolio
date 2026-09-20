@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
-import { memoryCardDefs } from "../../data/memoryCards";
+import { useEffect, useMemo, useState } from "react";
+import { memoryCardDefs as staticMemoryCardDefs } from "../../data/memoryCards";
+import { useContent } from "../../hooks/useContent";
+import type { MemoryCardDef, MemoryCardsContent } from "../../types/content";
 
 interface Card {
   id: number;
@@ -18,8 +20,8 @@ function shuffle<T>(arr: T[]): T[] {
   return copy;
 }
 
-function buildDeck(): Card[] {
-  const doubled = memoryCardDefs.flatMap((def, pairId) => [
+function buildDeck(defs: MemoryCardDef[]): Card[] {
+  const doubled = defs.flatMap((def, pairId) => [
     { id: pairId * 2, pairId, label: def.label, emoji: def.emoji },
     { id: pairId * 2 + 1, pairId, label: def.label, emoji: def.emoji },
   ]);
@@ -27,11 +29,25 @@ function buildDeck(): Card[] {
 }
 
 export function MemoryMatchGame() {
-  const [deck, setDeck] = useState<Card[]>(() => buildDeck());
+  const { cards: memoryCardDefs } = useContent<MemoryCardsContent>("memoryCards", {
+    cards: staticMemoryCardDefs,
+  });
+  const [deck, setDeck] = useState<Card[]>(() => buildDeck(memoryCardDefs));
   const [flipped, setFlipped] = useState<number[]>([]);
   const [matched, setMatched] = useState<Set<number>>(new Set());
   const [moves, setMoves] = useState(0);
   const [busy, setBusy] = useState(false);
+
+  // A CMS edit landing live mid-game would otherwise leave `deck` out
+  // of sync with a differently-sized card set -- reset for a clean deck.
+  useEffect(() => {
+    setDeck(buildDeck(memoryCardDefs));
+    setFlipped([]);
+    setMatched(new Set());
+    setMoves(0);
+    setBusy(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memoryCardDefs]);
 
   const won = matched.size === deck.length;
   const pairsFound = matched.size / 2;
@@ -39,7 +55,7 @@ export function MemoryMatchGame() {
   const cardsById = useMemo(() => new Map(deck.map((c) => [c.id, c])), [deck]);
 
   function reset() {
-    setDeck(buildDeck());
+    setDeck(buildDeck(memoryCardDefs));
     setFlipped([]);
     setMatched(new Set());
     setMoves(0);

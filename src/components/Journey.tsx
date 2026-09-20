@@ -1,10 +1,16 @@
 import { motion } from "framer-motion";
-import { journey } from "../data/journey";
+import { journey as staticJourney } from "../data/journey";
+import { useContent } from "../hooks/useContent";
+import type { JourneyContent } from "../types/content";
 import { AwardSparkle } from "./decor/AwardSparkle";
 import { CloudReveal } from "./decor/CloudReveal";
 import { SectionHeading } from "./SectionHeading";
 
 export function Journey() {
+  const { entries: journey } = useContent<JourneyContent>("journey", {
+    entries: staticJourney,
+  });
+
   return (
     <section id="journey" className="bg-[var(--bg-alt)] px-5 py-20">
       <CloudReveal>
@@ -20,7 +26,7 @@ export function Journey() {
       <ol className="relative mx-auto mt-12 max-w-2xl border-s-2 border-[var(--border)] ps-6 sm:ps-8">
         {journey.map((entry, i) => (
           <motion.li
-            key={entry.title}
+            key={i}
             initial={{ opacity: 0, x: -16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-60px" }}
