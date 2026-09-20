@@ -24,10 +24,11 @@ via the toggle in the same menu; sound defaults to off. Both the theme and
 the light/dark mode persist per-browser via `localStorage`.
 
 There's also a secret fifth theme, **Wonderland** 🪄 (hot pink/gold/teal) —
-typing the word "magic" anywhere on the page (desktop keyboard only)
-triggers a sparkle-shower reveal, switches to it immediately, and adds it
-to the picker for good from then on (`localStorage`-persisted, same
-pattern as the Matrix secret page).
+typing the word "magic" anywhere on the page (or, on a touchscreen,
+holding a finger still on an empty spot for ~1.4s) triggers a
+sparkle-shower reveal, switches to it immediately, and adds it to the
+picker for good from then on (`localStorage`-persisted, same pattern as
+the Matrix secret page).
 
 Add a new theme by adding an entry to `themeFlavors` in
 [`src/data/themeFlavors.ts`](src/data/themeFlavors.ts) — light/dark
@@ -42,21 +43,38 @@ pattern).
 
 ## Seasons
 
-Independent of the color theme, a small weather layer drifts over the
-fireflies — petals in spring, rising light motes in summer, falling
-leaves in autumn, snow in winter. It defaults to "Auto," which follows
-the real calendar, and can be overridden from the same theme-picker menu
-that has the color themes and sound toggle. Add a season in
-[`src/data/seasons.ts`](src/data/seasons.ts).
+Independent of the color theme, exactly one ambient effect plays per
+season (not a single particle field reskinned four ways, so the page
+never stacks up too many animated layers at once):
+
+| Season | Effect |
+|---|---|
+| Spring | Falling petals |
+| Summer | A warm, non-particle "sun glaze" glow — no falling particles |
+| Autumn | Falling leaves |
+| Winter | Fine, sparse "dusty" snow + a static frosted-corners vignette ("frozen a little") |
+
+Defaults to "Auto," which follows the real calendar, and can be
+overridden from the same theme-picker menu that has the color themes and
+sound toggle. Add a season/effect in
+[`src/data/seasons.ts`](src/data/seasons.ts) and
+[`SeasonWeather.tsx`](src/components/decor/SeasonWeather.tsx).
+
+There's no full-page firefly swarm anymore (it was competing with the
+seasonal effect and reading as too busy) — a few fireflies remain only
+as a subtle background touch tucked behind specific cards (About,
+Playground), via `LocalFireflies`.
 
 ## More easter eggs
 
 Besides the Konami/swipe → terminal → Matrix page chain: typing "magic"
-unlocks the Wonderland theme (above), and clicking the "Dorothy ✦" logo
-7 times within 3 seconds shows a small "you found a hidden spark" toast.
-There's also a permanent, always-on pixie-dust cursor trail on
-fine-pointer devices (`src/components/decor/PixieDustTrail.tsx`) —
-not hidden, just a bit of ambient magic.
+(or the long-press above) unlocks the Wonderland theme, and clicking the
+"Dorothy ✦" logo 7 times within 3 seconds (works with taps too) shows a
+small "you found a hidden spark" toast. There's also an always-on
+pixie-dust effect on the pointer (`src/components/decor/PixieDustTrail.tsx`)
+— not hidden, just a bit of ambient magic: a continuous faint trail on
+mouse/trackpad, and a small sparkle burst on tap on touchscreens (a
+continuous trail there would just follow scroll gestures).
 
 ## Getting started
 

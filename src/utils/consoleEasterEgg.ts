@@ -30,4 +30,8 @@ export function printConsoleEasterEgg() {
     "%cThere's also a word of power hidden somewhere on this page. Try typing it...",
     "color:#8F6BA8;font-family:monospace;",
   );
+  console.log(
+    "%cOn a touchscreen? Hold your finger still on an empty spot for a couple seconds instead.",
+    "color:#8F6BA8;font-family:monospace;",
+  );
 }

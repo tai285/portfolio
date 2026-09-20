@@ -3,11 +3,11 @@ import { useEffect, useRef } from "react";
 const WORD = "magic";
 
 /**
- * Type "magic" anywhere on the page (desktop-only -- a text word has no
- * natural mobile equivalent, unlike the Konami/swipe egg which was
- * deliberately built for touch parity). Ignores typing while an input,
- * textarea, or contentEditable element is focused, so it doesn't fire
- * while someone's filling out the guestbook.
+ * Type "magic" anywhere on the page (keyboard-only -- see
+ * useMagicPressEgg for the touch equivalent, a long press). Ignores
+ * typing while an input, textarea, or contentEditable element is
+ * focused, so it doesn't fire while someone's filling out the
+ * guestbook.
  */
 export function useMagicWordEgg(onUnlock: () => void) {
   const buffer = useRef("");

@@ -320,17 +320,24 @@ h4 {
   }
 }
 
-/* Seasonal weather layer (SeasonWeather.tsx) -- simple one-directional
-   CSS loops, unlike the fireflies' organic wander, since falling
-   petals/leaves/snow only ever need to travel one way. */
-.season-fall {
+/* Seasonal weather layer (SeasonWeather.tsx) -- exactly one effect per
+   season rather than a uniform particle field reskinned four ways, so
+   the page never stacks up too many animated layers at once. Falling
+   petals/leaves/snow share one CSS loop (simple and one-directional,
+   unlike the fireflies' organic wander); snow uses a lower
+   --season-opacity for a finer "dust" look instead of big flakes. */
+.season-fall,
+.dust-fall {
   animation: season-fall linear infinite;
   will-change: transform, opacity;
 }
 
-.season-rise {
-  animation: season-rise linear infinite;
-  will-change: transform, opacity;
+.dust-fall {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.6);
+  --season-opacity: 0.4;
 }
 
 @keyframes season-fall {
@@ -339,10 +346,10 @@ h4 {
     opacity: 0;
   }
   10% {
-    opacity: 0.75;
+    opacity: var(--season-opacity, 0.75);
   }
   90% {
-    opacity: 0.75;
+    opacity: var(--season-opacity, 0.75);
   }
   100% {
     transform: translateY(115vh) translateX(var(--season-sway, 30px)) rotate(180deg);
@@ -350,26 +357,55 @@ h4 {
   }
 }
 
-@keyframes season-rise {
-  0% {
-    transform: translateY(0) translateX(0) scale(0.8);
-    opacity: 0;
-  }
-  10% {
+/* Summer: a warm, non-particle glaze wash instead of falling anything
+   -- cheaper and calmer than another particle layer. */
+.sun-glaze {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  width: 70vw;
+  height: 70vw;
+  max-width: 900px;
+  max-height: 900px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 130, 0.35) 0%,
+    rgba(255, 214, 130, 0.12) 45%,
+    transparent 70%
+  );
+  animation: sun-glaze-pulse 7s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes sun-glaze-pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
     opacity: 0.7;
   }
-  90% {
-    opacity: 0.5;
+  50% {
+    transform: translateX(-50%) scale(1.12);
+    opacity: 1;
   }
-  100% {
-    transform: translateY(-115vh) translateX(var(--season-sway, 30px)) scale(1.1);
-    opacity: 0;
-  }
+}
+
+/* Winter: "frozen a little" -- a static, non-animated icy vignette in
+   the corners (no motion, so it's also free for anyone who prefers
+   reduced motion). */
+.frost-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at top left, rgba(200, 230, 255, 0.18), transparent 40%),
+    radial-gradient(ellipse at bottom right, rgba(200, 230, 255, 0.18), transparent 40%);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .season-fall,
-  .season-rise {
+  .dust-fall,
+  .sun-glaze {
     animation: none;
     opacity: 0;
   }

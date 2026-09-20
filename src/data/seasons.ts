@@ -1,20 +1,19 @@
 export type SeasonId = "spring" | "summer" | "autumn" | "winter";
 
+export type SeasonEffect = "petals" | "sun-glaze" | "leaves" | "dusty-snow";
+
 export interface Season {
   id: SeasonId;
   name: string;
   emoji: string;
-  /** Glyphs used for the falling weather particles. */
-  glyphs: string[];
-  /** Particles drift upward (like embers/motes) instead of falling. */
-  drift?: "up" | "down";
+  effect: SeasonEffect;
 }
 
 export const seasons: Season[] = [
-  { id: "spring", name: "Spring", emoji: "🌸", glyphs: ["🌸", "🌷", "💮"], drift: "down" },
-  { id: "summer", name: "Summer", emoji: "☀️", glyphs: ["✨", "☀️"], drift: "up" },
-  { id: "autumn", name: "Autumn", emoji: "🍂", glyphs: ["🍂", "🍁"], drift: "down" },
-  { id: "winter", name: "Winter", emoji: "❄️", glyphs: ["❄️", "❅"], drift: "down" },
+  { id: "spring", name: "Spring", emoji: "🌸", effect: "petals" },
+  { id: "summer", name: "Summer", emoji: "☀️", effect: "sun-glaze" },
+  { id: "autumn", name: "Autumn", emoji: "🍂", effect: "leaves" },
+  { id: "winter", name: "Winter", emoji: "❄️", effect: "dusty-snow" },
 ];
 
 /** Northern-hemisphere calendar mapping -- a whimsical stand-in, not a

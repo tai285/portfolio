@@ -2,7 +2,6 @@ import { AnimatePresence } from "framer-motion";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { About } from "./components/About";
 import { Album } from "./components/album/Album";
-import { Fireflies } from "./components/decor/Fireflies";
 import { PixieDustTrail } from "./components/decor/PixieDustTrail";
 import { SeasonWeather } from "./components/decor/SeasonWeather";
 import { Footer } from "./components/Footer";
@@ -18,6 +17,7 @@ import { Terminal } from "./components/secret/Terminal";
 import { WonderlandReveal } from "./components/secret/WonderlandReveal";
 import { themeFlavors } from "./data/themeFlavors";
 import { useHash } from "./hooks/useHash";
+import { useMagicPressEgg } from "./hooks/useMagicPressEgg";
 import { useMagicWordEgg } from "./hooks/useMagicWordEgg";
 import { useSeasonSettings } from "./hooks/useSeasonSettings";
 import { useSecretSequence } from "./hooks/useSecretSequence";
@@ -63,6 +63,7 @@ function App() {
   }, []);
 
   useMagicWordEgg(handleMagicWord);
+  useMagicPressEgg(handleMagicWord);
 
   const inMatrix = hash === MATRIX_HASH;
   const showAccessDenied = inMatrix && !unlocked;
@@ -97,7 +98,6 @@ function App() {
 
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--fg)]">
-      <Fireflies />
       <SeasonWeather season={seasonSettings.activeSeason} />
       <PixieDustTrail />
       <Nav unlocked={unlocked} themeSettings={themeSettings} seasonSettings={seasonSettings} />
