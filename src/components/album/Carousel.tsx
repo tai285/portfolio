@@ -68,7 +68,7 @@ export function Carousel({ photos, onOpenLightbox }: CarouselProps) {
 
   return (
     <div
-      className="relative mx-auto w-full max-w-2xl"
+      className="relative mx-auto w-full max-w-2xl overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}

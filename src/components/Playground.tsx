@@ -47,7 +47,7 @@ export function Playground() {
         ))}
       </div>
 
-      <div className="relative mx-auto mt-8 max-w-2xl">
+      <div className="relative mx-auto mt-8 max-w-2xl overflow-hidden">
         <LocalFireflies count={3} seed={17} className="-inset-x-8 -inset-y-8" />
         <div className="relative z-10">
           {tab === "facts" && <FunFactCard />}

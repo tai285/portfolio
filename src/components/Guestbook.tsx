@@ -17,6 +17,7 @@ export function Guestbook() {
   // submission without telling the bot why.
   const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!firebaseEnabled) return;
@@ -61,8 +62,12 @@ export function Guestbook() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setValidationError(null);
     if (website.trim()) return; // honeypot tripped
-    if (!name.trim() || !message.trim()) return;
+    if (!name.trim() || !message.trim()) {
+      setValidationError("Please fill in both your name and a message.");
+      return;
+    }
 
     setStatus("sending");
     try {
@@ -94,6 +99,7 @@ export function Guestbook() {
 
       <form
         onSubmit={handleSubmit}
+        noValidate
         className="mx-auto mt-10 max-w-lg space-y-3 rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 text-left shadow-sm"
       >
         <input
@@ -137,6 +143,9 @@ export function Guestbook() {
         >
           {status === "sending" ? "Sending…" : "Leave a message"}
         </button>
+        {validationError && (
+          <p className="text-center text-sm text-error">{validationError}</p>
+        )}
         {status === "sent" && (
           <p className="text-center text-sm text-success">
             Thanks! It'll appear once approved. ✦

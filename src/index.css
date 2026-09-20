@@ -70,11 +70,39 @@
 
 * {
   box-sizing: border-box;
+  /* Removes the gray/blue flash Android/iOS paint on every tap -- the
+     app already has its own hover/active states, so the native one
+     just reads as an unstyled flicker. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  overscroll-behavior-y: none;
 }
 
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  /* Blocks pinch/double-tap zoom at the CSS level -- the viewport
+     meta's user-scalable=no is ignored by iOS Safari 10+ for
+     accessibility, so touch-action is the part that actually works
+     there. Doesn't affect normal scrolling or any of the app's own
+     touch/pointer handling (drag, taps, gestures). */
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Chrome/Edge/Safari autofill: overrides the yellow/blue fill color
+   with a long transition delay trick (there's no direct "clear the
+   autofill background" API), matching the theme instead of standing
+   out as unstyled browser chrome. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--fg);
+  transition: background-color 9999s ease-in-out 0s;
+  caret-color: var(--fg);
 }
 
 @media (prefers-reduced-motion: reduce) {

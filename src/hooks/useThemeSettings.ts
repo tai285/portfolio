@@ -41,6 +41,10 @@ function applyPalette(mode: Mode, flavor: ThemeFlavor) {
   flavor.flowerColors.forEach((color, i) => {
     root.setProperty(`--garden-flower-${i + 1}`, color);
   });
+
+  // Tints the mobile browser's address/status bar to match, instead of
+  // leaving it a mismatched default gray/white.
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", palette.bg);
 }
 
 /**

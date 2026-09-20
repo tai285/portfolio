@@ -27,9 +27,15 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setValidationError(null);
+    if (!email.trim() || !password.trim()) {
+      setValidationError("Enter both your email and password.");
+      return;
+    }
     setSubmitting(true);
     await signIn(email, password);
     setSubmitting(false);
@@ -38,7 +44,7 @@ function LoginForm() {
   return (
     <div className="mx-auto mt-24 max-w-sm px-5">
       <h1 className="font-heading text-2xl text-[var(--fg)]">Admin login</h1>
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
         <TextInput
           type="email"
           placeholder="Email"
@@ -55,6 +61,7 @@ function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        {validationError && <p className="text-sm text-error">{validationError}</p>}
         {error && <p className="text-sm text-error">{error}</p>}
         <Button type="submit" disabled={submitting} className="w-full">
           {submitting ? "Signing in…" : "Sign in"}

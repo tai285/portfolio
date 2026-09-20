@@ -8,9 +8,42 @@ facts, trivia quiz, memory match). Plus a hidden CTF-style easter egg chain
 secret page), a couple of smaller standalone easter eggs -- all of which
 unlock real, visible badges in Milestones -- four pickable "fairy" themes
 with a secret fifth, a year-round seasonal weather layer, and a pixie-dust
-cursor trail (see below). Built with React, TypeScript, Vite, Tailwind CSS
-v4, Framer Motion, and an optional Firebase backend for a no-code admin
-panel and the guestbook.
+cursor trail (see below). Tuned to feel native on mobile -- no pinch/
+double-tap zoom, no native form-validation bubbles, no browser tap-flash
+or autofill styling clashing with the theme, zero horizontal overflow at
+any width. Built with React, TypeScript, Vite, Tailwind CSS v4, Framer
+Motion, and an optional Firebase backend for a no-code admin panel and the
+guestbook.
+
+## Mobile/device polish
+
+A few things tuned specifically so the site feels like a designed app on
+every device rather than a webpage with default browser chrome showing
+through:
+
+- **No pinch/double-tap zoom.** The viewport meta's `user-scalable=no` is
+  ignored by iOS Safari 10+ for accessibility, so the real fix is CSS
+  `touch-action: manipulation` on `html` (in `src/index.css`) -- that's
+  honored everywhere and doesn't interfere with the app's own touch
+  handling (drag, taps, the secret-sequence swipes).
+- **No native tap-highlight flash** (`-webkit-tap-highlight-color:
+  transparent`) and **no native autofill styling** (the `-webkit-autofill`
+  override in `index.css`) -- both replaced with the app's own hover/focus
+  states and the current theme's colors.
+- **No native form-validation bubbles.** The Guestbook and admin login
+  forms use `noValidate` + their own inline error text instead of letting
+  the browser pop up its own unstyled tooltip.
+- **`overscroll-behavior-y: none`** kills the rubber-band bounce/
+  pull-to-refresh feel at the top and bottom of the page.
+- **`<meta name="theme-color">` updates live** with the picked theme
+  (`useThemeSettings.ts`), so the mobile browser's address/status bar
+  tints to match instead of staying a mismatched gray.
+- **Zero horizontal overflow at any width**, including the ambient
+  decorations: a few components deliberately bleed slightly past their
+  own edges for effect (fireflies peeking from behind a card, a glow
+  behind the photo carousel) -- their containers now clip that bleed
+  locally (`overflow-hidden`) instead of letting it inflate the whole
+  page's scrollable width on narrow screens.
 
 ## Milestones (achievements)
 

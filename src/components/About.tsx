@@ -12,7 +12,7 @@ export function About() {
     <section id="about" className="px-5 py-20">
       <SectionHeading eyebrow="Get to know me" title="About" />
 
-      <div className="relative mx-auto mt-10 max-w-2xl">
+      <div className="relative mx-auto mt-10 max-w-2xl overflow-hidden">
         <LocalFireflies count={3} seed={11} className="-inset-x-8 -inset-y-8" />
 
         <motion.div
