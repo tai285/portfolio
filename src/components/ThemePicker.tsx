@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ThemeFlavor } from "../data/themeFlavors";
 import type { Season, SeasonId } from "../data/seasons";
 import { useThemeSound } from "../hooks/useThemeSound";
+import { trackSeasonTried, trackThemeTried } from "../utils/achievements";
 
 interface ThemePickerProps {
   flavorId: string;
@@ -48,6 +49,7 @@ export function ThemePicker({
   function pick(flavor: ThemeFlavor) {
     setFlavorId(flavor.id);
     playChime(flavor.chime);
+    trackThemeTried(flavor.id);
   }
 
   return (
@@ -120,7 +122,10 @@ export function ThemePicker({
                   <button
                     key={season.id}
                     type="button"
-                    onClick={() => setSeasonChoice(season.id)}
+                    onClick={() => {
+                      setSeasonChoice(season.id);
+                      trackSeasonTried(season.id);
+                    }}
                     aria-pressed={seasonChoice === season.id}
                     title={season.name}
                     className={`cursor-pointer rounded-full border px-2.5 py-1 text-xs transition-colors ${

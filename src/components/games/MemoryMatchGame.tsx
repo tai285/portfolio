@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { memoryCardDefs as staticMemoryCardDefs } from "../../data/memoryCards";
 import { useContent } from "../../hooks/useContent";
 import type { MemoryCardDef, MemoryCardsContent } from "../../types/content";
+import { unlockAchievement } from "../../utils/achievements";
 
 interface Card {
   id: number;
@@ -51,6 +52,10 @@ export function MemoryMatchGame() {
 
   const won = matched.size === deck.length;
   const pairsFound = matched.size / 2;
+
+  useEffect(() => {
+    if (won) unlockAchievement("matchmaker");
+  }, [won]);
 
   const cardsById = useMemo(() => new Map(deck.map((c) => [c.id, c])), [deck]);
 

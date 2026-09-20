@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState, type FormEvent } from "react";
 import { firebaseEnabled, getFirebase } from "../lib/firebase";
 import type { GuestbookMessage } from "../types/content";
+import { unlockAchievement } from "../utils/achievements";
 import { SectionHeading } from "./SectionHeading";
 
 const NAME_LIMIT = 40;
@@ -77,6 +78,7 @@ export function Guestbook() {
       setStatus("sent");
       setName("");
       setMessage("");
+      unlockAchievement("left-your-mark");
     } catch {
       setStatus("error");
     }

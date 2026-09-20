@@ -1,5 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { Achievements } from "./components/Achievements";
+import { AchievementToastHost } from "./components/AchievementToastHost";
 import { About } from "./components/About";
 import { Album } from "./components/album/Album";
 import { PixieDustTrail } from "./components/decor/PixieDustTrail";
@@ -22,6 +24,7 @@ import { useMagicWordEgg } from "./hooks/useMagicWordEgg";
 import { useSeasonSettings } from "./hooks/useSeasonSettings";
 import { useSecretSequence } from "./hooks/useSecretSequence";
 import { useThemeSettings } from "./hooks/useThemeSettings";
+import { unlockAchievement } from "./utils/achievements";
 import { playChime } from "./utils/chime";
 import { printConsoleEasterEgg } from "./utils/consoleEasterEgg";
 import { isMatrixUnlocked, setMatrixUnlocked } from "./utils/secretStorage";
@@ -49,6 +52,7 @@ function App() {
   }, []);
 
   const openTerminal = useCallback(() => {
+    unlockAchievement("cracked-the-code");
     if (unlocked) return;
     setTerminalOpen(true);
   }, [unlocked]);
@@ -56,6 +60,7 @@ function App() {
   useSecretSequence(openTerminal);
 
   const handleMagicWord = useCallback(() => {
+    unlockAchievement("whisper-of-magic");
     themeSettings.unlockWonderland();
     playChime(wonderlandFlavor.chime);
     setWonderlandReveal(true);
@@ -69,6 +74,7 @@ function App() {
   const showAccessDenied = inMatrix && !unlocked;
 
   function handleSolved() {
+    unlockAchievement("down-the-rabbit-hole");
     setMatrixUnlocked();
     setUnlocked(true);
   }
@@ -108,9 +114,11 @@ function App() {
         <Projects />
         <Album />
         <Playground />
+        <Achievements />
         <Guestbook />
       </main>
       <Footer />
+      <AchievementToastHost />
 
       <AnimatePresence>
         {terminalOpen && (

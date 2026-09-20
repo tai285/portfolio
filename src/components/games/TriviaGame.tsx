@@ -3,6 +3,7 @@ import { useState } from "react";
 import { triviaQuestions as staticTriviaQuestions } from "../../data/trivia";
 import { useContent } from "../../hooks/useContent";
 import type { TriviaContent } from "../../types/content";
+import { unlockAchievement } from "../../utils/achievements";
 
 type AnswerState = "unanswered" | "correct" | "wrong";
 
@@ -28,6 +29,7 @@ export function TriviaGame() {
   function next() {
     if (index + 1 >= triviaQuestions.length) {
       setFinished(true);
+      if (score === triviaQuestions.length) unlockAchievement("quiz-whiz");
       return;
     }
     setIndex((i) => i + 1);

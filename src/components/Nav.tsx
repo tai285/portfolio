@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { useSeasonSettings } from "../hooks/useSeasonSettings";
 import type { useThemeSettings } from "../hooks/useThemeSettings";
+import { unlockAchievement } from "../utils/achievements";
 import { ThemePicker } from "./ThemePicker";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -10,6 +11,7 @@ const LINKS = [
   { href: "#projects", label: "Projects" },
   { href: "#album", label: "Album" },
   { href: "#playground", label: "Playground" },
+  { href: "#milestones", label: "Milestones" },
   { href: "#guestbook", label: "Guestbook" },
 ];
 
@@ -47,6 +49,7 @@ export function Nav({ unlocked, themeSettings, seasonSettings }: NavProps) {
 
     if (logoClicks.current >= LOGO_CLICKS_NEEDED) {
       logoClicks.current = 0;
+      unlockAchievement("hidden-spark");
       setLogoToast(true);
       setTimeout(() => setLogoToast(false), 2200);
     }

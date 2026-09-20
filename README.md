@@ -1,15 +1,35 @@
 # Dorothy's Portfolio
 
 Personal portfolio site — hero, about, journey timeline, projects, an
-album/gallery with a category-filterable carousel, a guestbook, and a
-"Playground" section with three minigames (fun facts, trivia quiz, memory
-match). Plus a hidden CTF-style easter egg chain (console hint → Konami
-code / swipe pattern → terminal riddle → glitched secret page), a couple
-of smaller standalone easter eggs, four pickable "fairy" themes with a
-secret fifth, a year-round seasonal weather layer, and a pixie-dust cursor
-trail (see below). Built with React, TypeScript, Vite, Tailwind CSS v4,
-Framer Motion, and an optional Firebase backend for a no-code admin panel
-and the guestbook.
+album/gallery with a category-filterable carousel, a Milestones/trophy-case
+section, a guestbook, and a "Playground" section with three minigames (fun
+facts, trivia quiz, memory match). Plus a hidden CTF-style easter egg chain
+(console hint → Konami code / swipe pattern → terminal riddle → glitched
+secret page), a couple of smaller standalone easter eggs -- all of which
+unlock real, visible badges in Milestones -- four pickable "fairy" themes
+with a secret fifth, a year-round seasonal weather layer, and a pixie-dust
+cursor trail (see below). Built with React, TypeScript, Vite, Tailwind CSS
+v4, Framer Motion, and an optional Firebase backend for a no-code admin
+panel and the guestbook.
+
+## Milestones (achievements)
+
+A trophy case at `#milestones`: five always-shown real-life milestones
+(pulled from the same accomplishments as the Journey timeline), plus nine
+hidden badges for finding this site's secrets -- shown as locked "???"
+cards until unlocked. Finding one (completing the Konami/swipe sequence,
+solving the terminal riddle, unlocking Wonderland, signing the guestbook,
+trying all 4 themes, cycling all 4 seasons, a perfect trivia score, winning
+memory match, or the logo-click egg) shows a small toast immediately and
+reveals the badge in the section, live, no reload -- persisted per-browser
+via `localStorage`.
+
+Add a new one in [`src/data/achievements.ts`](src/data/achievements.ts)
+and call `unlockAchievement("its-id")` (from
+[`src/utils/achievements.ts`](src/utils/achievements.ts)) at whatever
+moment should trigger it -- it's a plain function importable from
+anywhere, idempotent, and drives both the toast and the section
+automatically, no wiring beyond the one call.
 
 ## Themes
 
