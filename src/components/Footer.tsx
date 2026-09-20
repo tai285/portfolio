@@ -80,28 +80,27 @@ export function Footer() {
 
       <div className="relative mt-10 h-16 overflow-hidden" aria-hidden="true">
         <Flower
-          petalColor="#d9639b"
+          petalColor="var(--garden-flower-1)"
           size={22}
           className="absolute bottom-3 left-[8%]"
         />
         <Flower
-          petalColor="#b98dd4"
+          petalColor="var(--garden-flower-2)"
           size={18}
           className="absolute bottom-4 left-[22%]"
         />
         <Flower
-          petalColor="#9edde3"
+          petalColor="var(--garden-flower-3)"
           size={24}
           className="absolute bottom-2 left-[46%]"
         />
         <Flower
-          petalColor="#f2c869"
-          centerColor="#d9639b"
+          petalColor="var(--garden-flower-4)"
           size={19}
           className="absolute bottom-4 left-[68%]"
         />
         <Flower
-          petalColor="#e8a6c8"
+          petalColor="var(--garden-flower-5)"
           size={21}
           className="absolute bottom-3 left-[86%]"
         />

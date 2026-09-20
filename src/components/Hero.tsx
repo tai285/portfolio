@@ -18,8 +18,8 @@ export function Hero() {
       />
 
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-12">
-        <Flower petalColor="#e8a6c8" size={16} className="absolute bottom-4 left-[14%]" />
-        <Flower petalColor="#9edde3" size={14} className="absolute bottom-5 left-[80%]" />
+        <Flower petalColor="var(--garden-flower-5)" size={16} className="absolute bottom-4 left-[14%]" />
+        <Flower petalColor="var(--garden-flower-3)" size={14} className="absolute bottom-5 left-[80%]" />
         <GrassRow seed={12} className="absolute inset-x-0 bottom-0 h-12 w-full" />
       </div>
 

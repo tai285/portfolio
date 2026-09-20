@@ -36,6 +36,16 @@
   --fg: var(--color-fg);
   --fg-muted: var(--color-fg-muted);
   --border: var(--color-border);
+
+  /* Fairy Garden defaults -- overridden per-flavor by useThemeSettings
+     once JS hydrates; these keep the pre-hydration paint consistent. */
+  --particle-rgb: 255, 216, 115;
+  --garden-grass: #7fb88a;
+  --garden-flower-1: #d9639b;
+  --garden-flower-2: #b98dd4;
+  --garden-flower-3: #9edde3;
+  --garden-flower-4: #f2c869;
+  --garden-flower-5: #e8a6c8;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -206,12 +216,12 @@ h4 {
   width: 7px;
   height: 7px;
   border-radius: 9999px;
-  background: #ffd873;
+  background: rgb(var(--particle-rgb));
   --fg-glow: calc(var(--fg-size, 7px) * 1.4);
   --fg-glow2: calc(var(--fg-size, 7px) * 2.8);
   box-shadow:
-    0 0 var(--fg-glow) calc(var(--fg-size, 7px) * 0.4) rgba(255, 205, 100, 0.95),
-    0 0 var(--fg-glow2) calc(var(--fg-size, 7px) * 1.1) rgba(255, 205, 100, 0.5);
+    0 0 var(--fg-glow) calc(var(--fg-size, 7px) * 0.4) rgba(var(--particle-rgb), 0.95),
+    0 0 var(--fg-glow2) calc(var(--fg-size, 7px) * 1.1) rgba(var(--particle-rgb), 0.5);
   will-change: transform, opacity;
 }
 
@@ -228,13 +238,13 @@ h4 {
   0%,
   100% {
     box-shadow:
-      0 0 calc(var(--fg-glow) * 0.55) calc(var(--fg-size, 7px) * 0.2) rgba(255, 205, 100, 0.55),
-      0 0 calc(var(--fg-glow2) * 0.55) calc(var(--fg-size, 7px) * 0.6) rgba(255, 205, 100, 0.25);
+      0 0 calc(var(--fg-glow) * 0.55) calc(var(--fg-size, 7px) * 0.2) rgba(var(--particle-rgb), 0.55),
+      0 0 calc(var(--fg-glow2) * 0.55) calc(var(--fg-size, 7px) * 0.6) rgba(var(--particle-rgb), 0.25);
   }
   50% {
     box-shadow:
-      0 0 var(--fg-glow) calc(var(--fg-size, 7px) * 0.55) rgba(255, 205, 100, 1),
-      0 0 var(--fg-glow2) calc(var(--fg-size, 7px) * 1.4) rgba(255, 205, 100, 0.6);
+      0 0 var(--fg-glow) calc(var(--fg-size, 7px) * 0.55) rgba(var(--particle-rgb), 1),
+      0 0 var(--fg-glow2) calc(var(--fg-size, 7px) * 1.4) rgba(var(--particle-rgb), 0.6);
   }
 }
 

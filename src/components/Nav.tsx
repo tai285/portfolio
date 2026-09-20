@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useThemeSettings } from "../hooks/useThemeSettings";
+import { ThemePicker } from "./ThemePicker";
 import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS = [
@@ -17,6 +19,7 @@ interface NavProps {
 export function Nav({ unlocked }: NavProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { mode, toggleMode, flavorId, setFlavorId, activeFlavor, flavors } = useThemeSettings();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -67,7 +70,13 @@ export function Nav({ unlocked }: NavProps) {
         </ul>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          <ThemePicker
+            flavorId={flavorId}
+            setFlavorId={setFlavorId}
+            activeFlavor={activeFlavor}
+            flavors={flavors}
+          />
+          <ThemeToggle mode={mode} toggleMode={toggleMode} />
           <button
             type="button"
             className="cursor-pointer inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] text-lg sm:hidden"

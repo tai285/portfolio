@@ -7,7 +7,7 @@ interface GrassRowProps {
   seed?: number;
 }
 
-export function GrassRow({ className, color = "#7fb88a", seed = 55 }: GrassRowProps) {
+export function GrassRow({ className, color = "var(--garden-grass, #7fb88a)", seed = 55 }: GrassRowProps) {
   const blades = useMemo(() => {
     const rand = mulberry32(seed);
     const arr: { x: number; h: number; lean: number; w: number }[] = [];
@@ -54,7 +54,7 @@ interface FlowerProps {
 
 export function Flower({
   size = 20,
-  petalColor = "#e8a6c8",
+  petalColor = "var(--garden-flower-1, #e8a6c8)",
   centerColor = "#f2c869",
   className,
   style,
@@ -68,7 +68,7 @@ export function Flower({
       style={style}
       aria-hidden="true"
     >
-      <line x1="12" y1="14" x2="12" y2="24" stroke="#7fb88a" strokeWidth="1.6" />
+      <line x1="12" y1="14" x2="12" y2="24" stroke="var(--garden-grass, #7fb88a)" strokeWidth="1.6" />
       {[0, 72, 144, 216, 288].map((angle) => (
         <ellipse
           key={angle}

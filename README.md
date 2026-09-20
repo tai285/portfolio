@@ -4,9 +4,32 @@ Personal portfolio site — hero, about, journey timeline, projects, an
 album/gallery with a category-filterable carousel, a guestbook, and a
 "Playground" section with three minigames (fun facts, trivia quiz, memory
 match). Plus a hidden CTF-style easter egg (console hint → Konami code /
-swipe pattern → terminal riddle → glitched secret page). Built with React,
+swipe pattern → terminal riddle → glitched secret page), and four pickable
+"fairy" themes with their own color palette, firefly/garden colors, and
+synthesized chime sound effects (see "Themes" below). Built with React,
 TypeScript, Vite, Tailwind CSS v4, Framer Motion, and an optional Firebase
 backend for a no-code admin panel and the guestbook.
+
+## Themes
+
+The 🧚/🌙/🌸/✨ button in the nav (next to the light/dark toggle) picks
+between four color themes — Fairy Garden, Moonlit Grove, Cherry Blossom,
+and Starlight Wish. Each one is a full palette (buttons, headings,
+backgrounds), plus its own firefly color and garden flower/grass colors,
+so it reads as a different flavor of the same magical-garden aesthetic
+rather than a different site. Picking one plays a short synthesized chime
+(no audio files — generated with the Web Audio API) if sound is turned on
+via the toggle in the same menu; sound defaults to off. Both the theme and
+the light/dark mode persist per-browser via `localStorage`.
+
+Add a fifth theme by adding an entry to `themeFlavors` in
+[`src/data/themeFlavors.ts`](src/data/themeFlavors.ts) — light/dark
+palette, firefly color, five garden colors, and a chime pitch/waveform.
+Nothing else needs to change; every themed surface (Tailwind's
+`primary`/`secondary`/`accent` utilities, `var(--bg)`/`var(--fg)`, the
+firefly glow, and the Hero/Footer garden) reads from CSS custom properties
+that `useThemeSettings` applies on `:root`, so a new theme is just new
+data.
 
 ## Getting started
 
