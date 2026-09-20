@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PhotoFrame } from "../../components/album/PhotoFrame";
-import { categories as staticCategories } from "../../data/photos";
+import { categories as staticCategories, photos as staticPhotos } from "../../data/photos";
 import { useAdminContentDoc } from "../../hooks/useAdminContentDoc";
 import { useAdminPhotos } from "../../hooks/useAdminPhotos";
 import type { Photo, PhotosCategories } from "../../types/content";
@@ -12,7 +12,7 @@ export function PhotosEditor() {
   const categoriesDoc = useAdminContentDoc<PhotosCategories>("photos", {
     categories: [...staticCategories],
   });
-  const photosDoc = useAdminPhotos([]);
+  const photosDoc = useAdminPhotos(staticPhotos.map((p, order) => ({ ...p, order })));
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
