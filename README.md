@@ -30,15 +30,18 @@ Until Firebase is connected, the site runs entirely on the static files in
 `src/data/` (see below) and `/#/admin` shows a "not set up yet" message —
 nothing is broken, it just isn't dynamic yet.
 
-### One-time Firebase setup (~5 minutes)
+### One-time Firebase setup (~5 minutes, stays on the free Spark plan)
 
 1. Go to [console.firebase.google.com](https://console.firebase.google.com) → **Add project** (any name, Google Analytics optional)
 2. **Build → Firestore Database** → Create database → **production mode**
 3. **Build → Authentication** → Get started → enable **Email/Password** → **Users** tab → **Add user** with your own email + a password (this is your `/#/admin` login — there's no public sign-up)
-4. **Build → Storage** → Get started → production mode
-5. In **Firestore Database → Rules**, paste the contents of [`firestore.rules`](firestore.rules) and publish
-6. In **Storage → Rules**, paste the contents of [`storage.rules`](storage.rules) and publish
-7. **⚙️ Project settings** → scroll to "Your apps" → click **`</>`** → register a web app → copy the `firebaseConfig` values
+4. In **Firestore Database → Rules**, paste the contents of [`firestore.rules`](firestore.rules) and publish
+5. **⚙️ Project settings** → scroll to "Your apps" → click **`</>`** → register a web app → copy the `firebaseConfig` values
+
+No Cloud Storage needed — as of late 2024 Firebase requires the paid
+Blaze plan for Storage, so uploaded photos are instead compressed in the
+browser and stored directly as Firestore documents (see "Album photos"
+below). Firestore + Auth alone stay on the free Spark plan.
 
 Then wire those values in two places:
 
@@ -103,8 +106,9 @@ code changes needed. Add a new category by adding a folder + a new entry
 in the `categories` array + photo entries referencing it.
 
 Once Firebase is connected, the Album photo editor in `/#/admin` can
-upload new images directly to Firebase Storage instead — no git needed
-for future photos.
+upload new images directly — no git needed for future photos. Each photo
+is resized and JPEG-compressed in the browser (no Storage/billing
+required) and saved straight to Firestore, one document per photo.
 
 ## Guestbook
 

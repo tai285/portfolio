@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { categories as staticCategories, photos as staticPhotos } from "../../data/photos";
-import { useContent } from "../../hooks/useContent";
-import type { PhotosContent } from "../../types/content";
+import { usePhotosContent } from "../../hooks/usePhotosContent";
 import { SectionHeading } from "../SectionHeading";
 import { Carousel } from "./Carousel";
 import { Lightbox } from "./Lightbox";
@@ -10,11 +9,13 @@ import { PhotoFrame } from "./PhotoFrame";
 
 const ALL = "All";
 
+const staticPhotosWithOrder = staticPhotos.map((p, order) => ({ ...p, order }));
+
 export function Album() {
-  const { categories, entries: photos } = useContent<PhotosContent>("photos", {
-    categories: [...staticCategories],
-    entries: staticPhotos,
-  });
+  const { categories, entries: photos } = usePhotosContent(
+    [...staticCategories],
+    staticPhotosWithOrder,
+  );
   const [category, setCategory] = useState<string>(ALL);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 

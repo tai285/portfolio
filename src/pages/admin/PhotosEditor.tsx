@@ -1,57 +1,48 @@
 import { useState } from "react";
-import { categories as staticCategories, photos as staticPhotos } from "../../data/photos";
-import { useAdminContentDoc } from "../../hooks/useAdminContentDoc";
-import { getFirebase } from "../../lib/firebase";
-import type { Photo, PhotosContent } from "../../types/content";
 import { PhotoFrame } from "../../components/album/PhotoFrame";
+import { categories as staticCategories } from "../../data/photos";
+import { useAdminContentDoc } from "../../hooks/useAdminContentDoc";
+import { useAdminPhotos } from "../../hooks/useAdminPhotos";
+import type { Photo, PhotosCategories } from "../../types/content";
+import { compressImageToDataUrl } from "../../utils/compressImage";
 import { Card, Field, SaveBar, TextInput } from "./fields";
 import { ListEditor } from "./ListEditor";
 
-function slugify(s: string) {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "photo";
-}
-
 export function PhotosEditor() {
-  const { value, setValue, loading, saving, saved, error, save } =
-    useAdminContentDoc<PhotosContent>("photos", {
-      categories: [...staticCategories],
-      entries: staticPhotos,
-    });
+  const categoriesDoc = useAdminContentDoc<PhotosCategories>("photos", {
+    categories: [...staticCategories],
+  });
+  const photosDoc = useAdminPhotos([]);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  if (loading) return <p className="text-sm text-[var(--fg-muted)]">Loading…</p>;
+  if (categoriesDoc.loading || photosDoc.loading) {
+    return <p className="text-sm text-[var(--fg-muted)]">Loading…</p>;
+  }
 
-  async function handleUpload(index: number, file: File, category: string) {
+  async function handleUpload(index: number, file: File) {
     setUploadingIndex(index);
     setUploadError(null);
     try {
-      const fb = await getFirebase();
-      if (!fb) throw new Error("Firebase not configured");
-      const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
-      const path = `photos/${slugify(category)}/${Date.now()}-${slugify(file.name)}`;
-      const storageRef = ref(fb.storage, path);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      const entries = [...value.entries];
-      entries[index] = { ...entries[index], src: url };
-      setValue({ ...value, entries });
-    } catch {
-      setUploadError("Upload failed -- check your connection and try again.");
+      const dataUrl = await compressImageToDataUrl(file);
+      const entries = [...photosDoc.entries];
+      entries[index] = { ...entries[index], src: dataUrl };
+      photosDoc.setEntries(entries);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed.");
     } finally {
       setUploadingIndex(null);
     }
   }
 
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-6 pb-24">
       <Card>
         <Field label="Categories (comma-separated -- these become the filter pills)">
           <TextInput
-            value={value.categories.join(", ")}
+            value={categoriesDoc.value.categories.join(", ")}
             onChange={(e) =>
-              setValue({
-                ...value,
+              categoriesDoc.setValue({
                 categories: e.target.value
                   .split(",")
                   .map((c) => c.trim())
@@ -60,19 +51,33 @@ export function PhotosEditor() {
             }
           />
         </Field>
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={categoriesDoc.save}
+            disabled={categoriesDoc.saving}
+            className="min-h-11 cursor-pointer rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {categoriesDoc.saving ? "Saving…" : "Save categories"}
+          </button>
+          {categoriesDoc.saved && !categoriesDoc.saving && (
+            <span className="ml-3 text-sm font-medium text-success">Saved ✓</span>
+          )}
+        </div>
       </Card>
 
       <ListEditor<Photo>
-        items={value.entries}
-        onChange={(entries) => setValue({ ...value, entries })}
+        items={photosDoc.entries}
+        onChange={photosDoc.setEntries}
         addLabel="+ Add photo"
         itemLabel={(p, i) => p.caption || p.alt || `Photo ${i + 1}`}
         makeNew={() => ({
-          id: `photo-${Date.now()}`,
+          id: `new-${crypto.randomUUID()}`,
           src: "",
           alt: "",
-          category: value.categories[0] ?? "",
+          category: categoriesDoc.value.categories[0] ?? "",
           caption: "",
+          order: photosDoc.entries.length,
         })}
         renderItem={(photo, update, i) => (
           <div className="grid gap-4 sm:grid-cols-[140px_1fr]">
@@ -91,13 +96,13 @@ export function PhotosEditor() {
                   disabled={uploadingIndex === i}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) handleUpload(i, file, photo.category);
+                    if (file) handleUpload(i, file);
                   }}
                   className="block w-full text-xs"
                 />
               </label>
               {uploadingIndex === i && (
-                <p className="mt-1 text-xs text-[var(--fg-muted)]">Uploading…</p>
+                <p className="mt-1 text-xs text-[var(--fg-muted)]">Compressing…</p>
               )}
             </div>
             <div className="space-y-3">
@@ -107,7 +112,7 @@ export function PhotosEditor() {
                   onChange={(e) => update({ category: e.target.value })}
                   className="min-h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--fg)]"
                 >
-                  {value.categories.map((c) => (
+                  {categoriesDoc.value.categories.map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>
@@ -132,8 +137,8 @@ export function PhotosEditor() {
       />
 
       {uploadError && <p className="text-sm text-error">{uploadError}</p>}
-      {error && <p className="text-sm text-error">{error}</p>}
-      <SaveBar onSave={save} saving={saving} saved={saved} />
+      {photosDoc.error && <p className="text-sm text-error">{photosDoc.error}</p>}
+      <SaveBar onSave={photosDoc.save} saving={photosDoc.saving} saved={photosDoc.saved} />
     </div>
   );
 }

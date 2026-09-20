@@ -29,15 +29,20 @@ export interface Project {
 
 export interface Photo {
   id: string;
+  // A public/photos/... path (existing static photos) or a base64
+  // data: URI (photos uploaded via the CMS -- see PhotosEditor). Each
+  // photo lives in its own Firestore document specifically so a data
+  // URI's size only has to fit under ONE document's 1MiB cap, not
+  // share that budget with every other photo.
   src: string;
   alt: string;
   category: string;
   caption?: string;
+  order: number;
 }
 
-export interface PhotosContent {
+export interface PhotosCategories {
   categories: string[];
-  entries: Photo[];
 }
 
 export interface TriviaQuestion {
