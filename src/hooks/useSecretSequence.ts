@@ -33,6 +33,12 @@ const KEY_TOKEN: Record<string, Token> = {
 export function useSecretSequence(onUnlock: () => void) {
   const progress = useRef(0);
   const touchStart = useRef<{ x: number; y: number; t: number } | null>(null);
+  // iOS Safari frequently fires touchcancel instead of touchend the
+  // moment it hands a vertical/horizontal drag off to native scrolling
+  // (Android tends to still fire touchend in the same situation). Track
+  // the latest point via touchmove so the gesture can be resolved
+  // either way, instead of only trusting touchend's own coordinates.
+  const lastPoint = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     function feed(token: Token) {
@@ -60,17 +66,31 @@ export function useSecretSequence(onUnlock: () => void) {
       const t = e.changedTouches?.[0];
       if (!t) return;
       touchStart.current = { x: t.clientX, y: t.clientY, t: Date.now() };
+      lastPoint.current = { x: t.clientX, y: t.clientY };
     }
 
-    function onTouchEnd(e: TouchEvent) {
+    function onTouchMove(e: TouchEvent) {
+      const t = e.changedTouches?.[0];
+      if (!t) return;
+      lastPoint.current = { x: t.clientX, y: t.clientY };
+    }
+
+    function resolveGesture(e: TouchEvent) {
       const start = touchStart.current;
       touchStart.current = null;
       if (!start) return;
 
-      const t = e.changedTouches?.[0];
-      if (!t) return;
-      const dx = t.clientX - start.x;
-      const dy = t.clientY - start.y;
+      // Prefer the event's own end point; fall back to the last point
+      // seen via touchmove, since a cancelled gesture's changedTouches
+      // can be stale or missing on iOS.
+      const end = e.changedTouches?.[0]
+        ? { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY }
+        : lastPoint.current;
+      lastPoint.current = null;
+      if (!end) return;
+
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
       const dt = Date.now() - start.t;
       const absX = Math.abs(dx);
       const absY = Math.abs(dy);
@@ -94,11 +114,15 @@ export function useSecretSequence(onUnlock: () => void) {
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", resolveGesture, { passive: true });
+    window.addEventListener("touchcancel", resolveGesture, { passive: true });
     return () => {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", resolveGesture);
+      window.removeEventListener("touchcancel", resolveGesture);
     };
   }, [onUnlock]);
 }
