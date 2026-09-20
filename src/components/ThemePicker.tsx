@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import type { ThemeFlavor } from "../data/themeFlavors";
+import type { Season, SeasonId } from "../data/seasons";
 import { useThemeSound } from "../hooks/useThemeSound";
 
 interface ThemePickerProps {
@@ -8,9 +9,22 @@ interface ThemePickerProps {
   setFlavorId: (id: string) => void;
   activeFlavor: ThemeFlavor;
   flavors: ThemeFlavor[];
+  seasonChoice: SeasonId | "auto";
+  setSeasonChoice: (choice: SeasonId | "auto") => void;
+  activeSeason: Season;
+  seasons: Season[];
 }
 
-export function ThemePicker({ flavorId, setFlavorId, activeFlavor, flavors }: ThemePickerProps) {
+export function ThemePicker({
+  flavorId,
+  setFlavorId,
+  activeFlavor,
+  flavors,
+  seasonChoice,
+  setSeasonChoice,
+  activeSeason,
+  seasons,
+}: ThemePickerProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const { enabled: soundOn, toggleEnabled: toggleSound, playChime } = useThemeSound();
@@ -85,6 +99,46 @@ export function ThemePicker({ flavorId, setFlavorId, activeFlavor, flavors }: Th
                 );
               })}
             </ul>
+
+            <div className="mt-2 border-t border-[var(--border)] pt-2">
+              <p className="mb-1.5 px-1 text-xs font-semibold text-[var(--fg-muted)]">Season</p>
+              <div className="flex flex-wrap gap-1.5 px-1">
+                <button
+                  type="button"
+                  onClick={() => setSeasonChoice("auto")}
+                  aria-pressed={seasonChoice === "auto"}
+                  title="Follow the current season automatically"
+                  className={`cursor-pointer rounded-full border px-2.5 py-1 text-xs transition-colors ${
+                    seasonChoice === "auto"
+                      ? "border-primary bg-[var(--bg-alt)] font-semibold text-primary"
+                      : "border-[var(--border)] text-[var(--fg)] hover:bg-[var(--bg-alt)]"
+                  }`}
+                >
+                  🔄 Auto
+                </button>
+                {seasons.map((season) => (
+                  <button
+                    key={season.id}
+                    type="button"
+                    onClick={() => setSeasonChoice(season.id)}
+                    aria-pressed={seasonChoice === season.id}
+                    title={season.name}
+                    className={`cursor-pointer rounded-full border px-2.5 py-1 text-xs transition-colors ${
+                      seasonChoice === season.id
+                        ? "border-primary bg-[var(--bg-alt)] font-semibold text-primary"
+                        : "border-[var(--border)] text-[var(--fg)] hover:bg-[var(--bg-alt)]"
+                    }`}
+                  >
+                    <span aria-hidden="true">{season.emoji}</span>
+                  </button>
+                ))}
+              </div>
+              {seasonChoice === "auto" && (
+                <p className="mt-1 px-1 text-[11px] text-[var(--fg-muted)]">
+                  Currently {activeSeason.name.toLowerCase()} 🔄
+                </p>
+              )}
+            </div>
 
             <div className="mt-2 border-t border-[var(--border)] pt-2">
               <button

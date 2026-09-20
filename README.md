@@ -3,12 +3,13 @@
 Personal portfolio site — hero, about, journey timeline, projects, an
 album/gallery with a category-filterable carousel, a guestbook, and a
 "Playground" section with three minigames (fun facts, trivia quiz, memory
-match). Plus a hidden CTF-style easter egg (console hint → Konami code /
-swipe pattern → terminal riddle → glitched secret page), and four pickable
-"fairy" themes with their own color palette, firefly/garden colors, and
-synthesized chime sound effects (see "Themes" below). Built with React,
-TypeScript, Vite, Tailwind CSS v4, Framer Motion, and an optional Firebase
-backend for a no-code admin panel and the guestbook.
+match). Plus a hidden CTF-style easter egg chain (console hint → Konami
+code / swipe pattern → terminal riddle → glitched secret page), a couple
+of smaller standalone easter eggs, four pickable "fairy" themes with a
+secret fifth, a year-round seasonal weather layer, and a pixie-dust cursor
+trail (see below). Built with React, TypeScript, Vite, Tailwind CSS v4,
+Framer Motion, and an optional Firebase backend for a no-code admin panel
+and the guestbook.
 
 ## Themes
 
@@ -22,14 +23,40 @@ rather than a different site. Picking one plays a short synthesized chime
 via the toggle in the same menu; sound defaults to off. Both the theme and
 the light/dark mode persist per-browser via `localStorage`.
 
-Add a fifth theme by adding an entry to `themeFlavors` in
+There's also a secret fifth theme, **Wonderland** 🪄 (hot pink/gold/teal) —
+typing the word "magic" anywhere on the page (desktop keyboard only)
+triggers a sparkle-shower reveal, switches to it immediately, and adds it
+to the picker for good from then on (`localStorage`-persisted, same
+pattern as the Matrix secret page).
+
+Add a new theme by adding an entry to `themeFlavors` in
 [`src/data/themeFlavors.ts`](src/data/themeFlavors.ts) — light/dark
 palette, firefly color, five garden colors, and a chime pitch/waveform.
 Nothing else needs to change; every themed surface (Tailwind's
 `primary`/`secondary`/`accent` utilities, `var(--bg)`/`var(--fg)`, the
 firefly glow, and the Hero/Footer garden) reads from CSS custom properties
 that `useThemeSettings` applies on `:root`, so a new theme is just new
-data.
+data. Set `secret: true` to hide it from the picker until something
+unlocks it (see `unlockWonderland` in `useThemeSettings.ts` for the
+pattern).
+
+## Seasons
+
+Independent of the color theme, a small weather layer drifts over the
+fireflies — petals in spring, rising light motes in summer, falling
+leaves in autumn, snow in winter. It defaults to "Auto," which follows
+the real calendar, and can be overridden from the same theme-picker menu
+that has the color themes and sound toggle. Add a season in
+[`src/data/seasons.ts`](src/data/seasons.ts).
+
+## More easter eggs
+
+Besides the Konami/swipe → terminal → Matrix page chain: typing "magic"
+unlocks the Wonderland theme (above), and clicking the "Dorothy ✦" logo
+7 times within 3 seconds shows a small "you found a hidden spark" toast.
+There's also a permanent, always-on pixie-dust cursor trail on
+fine-pointer devices (`src/components/decor/PixieDustTrail.tsx`) —
+not hidden, just a bit of ambient magic.
 
 ## Getting started
 

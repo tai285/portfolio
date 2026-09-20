@@ -33,6 +33,8 @@ export interface ThemeFlavor {
   grassColor: string;
   flowerColors: string[];
   chime: ThemeChime;
+  /** Hidden from the picker until its easter egg is found. */
+  secret?: boolean;
 }
 
 export const themeFlavors: ThemeFlavor[] = [
@@ -179,6 +181,43 @@ export const themeFlavors: ThemeFlavor[] = [
     grassColor: "#6fae9e",
     flowerColors: ["#a78bfa", "#f2d98b", "#c9a6f5", "#8fe3d0", "#7a5fd1"],
     chime: { baseFreq: 880, waveform: "sine", style: "twinkle" },
+  },
+  {
+    id: "wonderland",
+    name: "Wonderland",
+    emoji: "🪄",
+    swatch: "#ff5fa2",
+    secret: true,
+    light: {
+      primary: "#ff5fa2",
+      primaryLight: "#ff8fc2",
+      secondary: "#ffd166",
+      accent: "#3ddad7",
+      accent2: "#8f6ba8",
+      bg: "#fff9f0",
+      bgAlt: "#ffeedc",
+      surface: "#ffffff",
+      fg: "#3a1f3d",
+      fgMuted: "#8a6a8f",
+      border: "#ffd9ec",
+    },
+    dark: {
+      primary: "#ff5fa2",
+      primaryLight: "#ff8fc2",
+      secondary: "#ffd166",
+      accent: "#3ddad7",
+      accent2: "#8f6ba8",
+      bg: "#1a0f1f",
+      bgAlt: "#241628",
+      surface: "#2c1a30",
+      fg: "#ffeaf6",
+      fgMuted: "#d6a9c8",
+      border: "#4a2a4d",
+    },
+    particleRgb: "255, 209, 102",
+    grassColor: "#3ddad7",
+    flowerColors: ["#ff5fa2", "#ffd166", "#3ddad7", "#8f6ba8", "#ff8fc2"],
+    chime: { baseFreq: 988, waveform: "sine", style: "twinkle" },
   },
 ];
 

@@ -26,4 +26,8 @@ export function printConsoleEasterEgg() {
     "%cOn a touchscreen? Swipe the same pattern, then tap left, tap right.",
     "color:#8F6BA8;font-family:monospace;",
   );
+  console.log(
+    "%cThere's also a word of power hidden somewhere on this page. Try typing it...",
+    "color:#8F6BA8;font-family:monospace;",
+  );
 }

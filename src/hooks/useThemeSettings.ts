@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { defaultThemeFlavor, themeFlavors, type ThemeFlavor } from "../data/themeFlavors";
+import { isWonderlandUnlocked, setWonderlandUnlocked } from "../utils/secretStorage";
 
 type Mode = "light" | "dark";
 
@@ -59,8 +60,16 @@ export function useThemeSettings() {
       defaultThemeFlavor.id,
     ),
   );
+  const [wonderlandUnlocked, setWonderlandUnlockedState] = useState(isWonderlandUnlocked);
 
   const activeFlavor = themeFlavors.find((f) => f.id === flavorId) ?? defaultThemeFlavor;
+  const flavors = themeFlavors.filter((f) => !f.secret || wonderlandUnlocked);
+
+  function unlockWonderland() {
+    setWonderlandUnlocked();
+    setWonderlandUnlockedState(true);
+    setFlavorId("wonderland");
+  }
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", mode);
@@ -80,6 +89,7 @@ export function useThemeSettings() {
     flavorId: activeFlavor.id,
     setFlavorId,
     activeFlavor,
-    flavors: themeFlavors,
+    flavors,
+    unlockWonderland,
   };
 }

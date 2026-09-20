@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { useThemeSettings } from "../hooks/useThemeSettings";
+import { useEffect, useRef, useState } from "react";
+import type { useSeasonSettings } from "../hooks/useSeasonSettings";
+import type { useThemeSettings } from "../hooks/useThemeSettings";
 import { ThemePicker } from "./ThemePicker";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -12,14 +13,23 @@ const LINKS = [
   { href: "#guestbook", label: "Guestbook" },
 ];
 
+const LOGO_CLICKS_NEEDED = 7;
+const LOGO_CLICK_WINDOW_MS = 3000;
+
 interface NavProps {
   unlocked?: boolean;
+  themeSettings: ReturnType<typeof useThemeSettings>;
+  seasonSettings: ReturnType<typeof useSeasonSettings>;
 }
 
-export function Nav({ unlocked }: NavProps) {
+export function Nav({ unlocked, themeSettings, seasonSettings }: NavProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { mode, toggleMode, flavorId, setFlavorId, activeFlavor, flavors } = useThemeSettings();
+  const [logoToast, setLogoToast] = useState(false);
+  const logoClicks = useRef(0);
+  const logoClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { mode, toggleMode, flavorId, setFlavorId, activeFlavor, flavors } = themeSettings;
+  const { seasonChoice, setSeasonChoice, activeSeason, seasons } = seasonSettings;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -27,6 +37,20 @@ export function Nav({ unlocked }: NavProps) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  function onLogoClick() {
+    logoClicks.current += 1;
+    if (logoClickTimer.current) clearTimeout(logoClickTimer.current);
+    logoClickTimer.current = setTimeout(() => {
+      logoClicks.current = 0;
+    }, LOGO_CLICK_WINDOW_MS);
+
+    if (logoClicks.current >= LOGO_CLICKS_NEEDED) {
+      logoClicks.current = 0;
+      setLogoToast(true);
+      setTimeout(() => setLogoToast(false), 2200);
+    }
+  }
 
   return (
     <header
@@ -37,9 +61,10 @@ export function Nav({ unlocked }: NavProps) {
       }`}
     >
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
-        <div className="flex items-center gap-2">
+        <div className="relative flex items-center gap-2">
           <a
             href="#top"
+            onClick={onLogoClick}
             className="font-heading text-lg font-semibold text-primary cursor-pointer"
           >
             Dorothy ✦
@@ -53,6 +78,14 @@ export function Nav({ unlocked }: NavProps) {
             >
               🐇
             </a>
+          )}
+          {logoToast && (
+            <span
+              role="status"
+              className="absolute left-0 top-[calc(100%+8px)] z-50 w-max max-w-[220px] rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs font-medium text-[var(--fg)] shadow-lg"
+            >
+              ✨ You found a hidden spark! ✨
+            </span>
           )}
         </div>
 
@@ -75,6 +108,10 @@ export function Nav({ unlocked }: NavProps) {
             setFlavorId={setFlavorId}
             activeFlavor={activeFlavor}
             flavors={flavors}
+            seasonChoice={seasonChoice}
+            setSeasonChoice={setSeasonChoice}
+            activeSeason={activeSeason}
+            seasons={seasons}
           />
           <ThemeToggle mode={mode} toggleMode={toggleMode} />
           <button

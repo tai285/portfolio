@@ -3,6 +3,8 @@ import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { About } from "./components/About";
 import { Album } from "./components/album/Album";
 import { Fireflies } from "./components/decor/Fireflies";
+import { PixieDustTrail } from "./components/decor/PixieDustTrail";
+import { SeasonWeather } from "./components/decor/SeasonWeather";
 import { Footer } from "./components/Footer";
 import { Guestbook } from "./components/Guestbook";
 import { Hero } from "./components/Hero";
@@ -13,10 +15,18 @@ import { Projects } from "./components/Projects";
 import { AccessDenied } from "./components/secret/AccessDenied";
 import { MatrixPage } from "./components/secret/MatrixPage";
 import { Terminal } from "./components/secret/Terminal";
+import { WonderlandReveal } from "./components/secret/WonderlandReveal";
+import { themeFlavors } from "./data/themeFlavors";
 import { useHash } from "./hooks/useHash";
+import { useMagicWordEgg } from "./hooks/useMagicWordEgg";
+import { useSeasonSettings } from "./hooks/useSeasonSettings";
 import { useSecretSequence } from "./hooks/useSecretSequence";
+import { useThemeSettings } from "./hooks/useThemeSettings";
+import { playChime } from "./utils/chime";
 import { printConsoleEasterEgg } from "./utils/consoleEasterEgg";
 import { isMatrixUnlocked, setMatrixUnlocked } from "./utils/secretStorage";
+
+const wonderlandFlavor = themeFlavors.find((f) => f.id === "wonderland")!;
 
 // Lazy: the whole CMS (7 editors + guestbook moderation + Firebase
 // auth) only needs to be downloaded by someone who actually opens
@@ -30,6 +40,9 @@ function App() {
   const [hash, setHash] = useHash();
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [unlocked, setUnlocked] = useState(() => isMatrixUnlocked());
+  const [wonderlandReveal, setWonderlandReveal] = useState(false);
+  const themeSettings = useThemeSettings();
+  const seasonSettings = useSeasonSettings();
 
   useEffect(() => {
     printConsoleEasterEgg();
@@ -41,6 +54,15 @@ function App() {
   }, [unlocked]);
 
   useSecretSequence(openTerminal);
+
+  const handleMagicWord = useCallback(() => {
+    themeSettings.unlockWonderland();
+    playChime(wonderlandFlavor.chime);
+    setWonderlandReveal(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useMagicWordEgg(handleMagicWord);
 
   const inMatrix = hash === MATRIX_HASH;
   const showAccessDenied = inMatrix && !unlocked;
@@ -76,7 +98,9 @@ function App() {
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--fg)]">
       <Fireflies />
-      <Nav unlocked={unlocked} />
+      <SeasonWeather season={seasonSettings.activeSeason} />
+      <PixieDustTrail />
+      <Nav unlocked={unlocked} themeSettings={themeSettings} seasonSettings={seasonSettings} />
       <main>
         <Hero />
         <About />
@@ -105,6 +129,12 @@ function App() {
 
       <AnimatePresence>
         {showAccessDenied && <AccessDenied onDismiss={() => setHash("#")} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {wonderlandReveal && (
+          <WonderlandReveal onDismiss={() => setWonderlandReveal(false)} />
+        )}
       </AnimatePresence>
     </div>
   );
