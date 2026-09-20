@@ -137,6 +137,7 @@ export function PhotosEditor() {
       />
 
       {uploadError && <p className="text-sm text-error">{uploadError}</p>}
+      {categoriesDoc.error && <p className="text-sm text-error">{categoriesDoc.error}</p>}
       {photosDoc.error && <p className="text-sm text-error">{photosDoc.error}</p>}
       <SaveBar onSave={photosDoc.save} saving={photosDoc.saving} saved={photosDoc.saved} />
     </div>

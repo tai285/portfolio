@@ -26,16 +26,22 @@ export function useAdminContentDoc<T>(key: string, fallback: T): UseAdminContent
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const fb = await getFirebase();
-      if (!fb || cancelled) {
-        setLoading(false);
-        return;
+      try {
+        const fb = await getFirebase();
+        if (!fb || cancelled) return;
+        const { doc, getDoc } = await import("firebase/firestore");
+        const snap = await getDoc(doc(fb.db, "content", key));
+        if (cancelled) return;
+        if (snap.exists()) setValue(snap.data() as T);
+      } catch {
+        if (!cancelled) {
+          setError(
+            "Couldn't load saved content -- check your Firestore rules/connection. Showing local defaults.",
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      const { doc, getDoc } = await import("firebase/firestore");
-      const snap = await getDoc(doc(fb.db, "content", key));
-      if (cancelled) return;
-      if (snap.exists()) setValue(snap.data() as T);
-      setLoading(false);
     })();
     return () => {
       cancelled = true;

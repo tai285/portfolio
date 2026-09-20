@@ -30,22 +30,28 @@ export function useAdminPhotos(fallback: Photo[]): UseAdminPhotos {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const fb = await getFirebase();
-      if (!fb || cancelled) {
-        setLoading(false);
-        return;
+      try {
+        const fb = await getFirebase();
+        if (!fb || cancelled) return;
+        const { collection, getDocs, orderBy, query } = await import("firebase/firestore");
+        const snap = await getDocs(
+          query(collection(fb.db, "content", "photos", "items"), orderBy("order")),
+        );
+        if (cancelled) return;
+        if (!snap.empty) {
+          const loaded = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Photo, "id">) }));
+          setEntries(loaded);
+          setOriginalIds(new Set(loaded.map((p) => p.id)));
+        }
+      } catch {
+        if (!cancelled) {
+          setError(
+            "Couldn't load saved photos -- check your Firestore rules/connection. Showing local defaults.",
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      const { collection, getDocs, orderBy, query } = await import("firebase/firestore");
-      const snap = await getDocs(
-        query(collection(fb.db, "content", "photos", "items"), orderBy("order")),
-      );
-      if (cancelled) return;
-      if (!snap.empty) {
-        const loaded = snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Photo, "id">) }));
-        setEntries(loaded);
-        setOriginalIds(new Set(loaded.map((p) => p.id)));
-      }
-      setLoading(false);
     })();
     return () => {
       cancelled = true;
